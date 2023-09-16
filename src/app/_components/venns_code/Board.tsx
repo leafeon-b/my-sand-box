@@ -1,6 +1,7 @@
-import { Button, Container, Typography } from "@mui/material";
-import type { BoardProps as BGIOBoardProps } from "boardgame.io/react";
+import { Button, Typography, Container, Paper, Grid } from "@mui/material";
 import { VennsCodeState } from "./Game";
+import React from "react";
+import type { BoardProps as BGIOBoardProps } from "boardgame.io/react";
 
 interface VennsCodeBoardProps extends BGIOBoardProps<VennsCodeState> {}
 
@@ -30,6 +31,7 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
         <Typography variant="h5" gutterBottom>
           Roles:
         </Typography>
+        <Typography variant="body1">GM: {G.roles.GM}</Typography>
         <Typography variant="body1">
           Team A 出題者: {G.roles.TeamAQuestioner}
         </Typography>
