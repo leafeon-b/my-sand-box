@@ -5,13 +5,14 @@ import path from "path";
 import serve from "koa-static";
 import { TicTacToe } from "./app/_components/tic_tac_toe/Game";
 import { TicTacToe4 } from "./app/_components/tic_tac_toe_4/Game";
+import VennsCode from "./app/_components/venns_code/Game";
 
 dotenv.config();
 
 const PORT = parseInt(process.env.PORT ?? "8000");
 
 const server = Server({
-  games: [TicTacToe, TicTacToe4],
+  games: [TicTacToe, TicTacToe4, VennsCode],
   origins: [Origins.LOCALHOST],
 });
 
