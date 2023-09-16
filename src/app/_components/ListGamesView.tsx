@@ -79,11 +79,11 @@ const ListGamesView: React.FC<{ L: LobbyRendererProps }> = ({ L }) => {
   );
 };
 
-function createMatchButtons(
-  L: LobbyRendererProps,
-  match: LobbyAPI.Match,
-  playerCount: number,
-): JSX.Element {
+const MatchButtons: React.FC<{
+  L: LobbyRendererProps;
+  match: LobbyAPI.Match;
+  playerCount: number;
+}> = ({ L, match, playerCount }) => {
   const playerSeat = match.players.find((p) => p.name === L.playerName); // 自分が着席しているところ
   const freeSeat = match.players.find((p) => !p.name); // 空席
   if (playerSeat && freeSeat) {
@@ -137,7 +137,7 @@ function createMatchButtons(
   }
   // TODO: add spectate button
   return <div>Match In Progress...</div>;
-}
+};
 
 const MatchList: React.FC<{ L: LobbyRendererProps }> = ({ L }) => {
   return (
@@ -151,7 +151,11 @@ const MatchList: React.FC<{ L: LobbyRendererProps }> = ({ L }) => {
           <div>
             {match.players.map((player) => player.name ?? "[free]").join(", ")}
           </div>
-          {createMatchButtons(L, match, match.players.length)}
+          <MatchButtons
+            L={L}
+            match={match}
+            playerCount={match.players.length}
+          />
           <div>{new Date(match.createdAt).toLocaleString()}</div>
         </div>
       ))}
