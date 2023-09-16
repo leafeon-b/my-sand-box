@@ -4,9 +4,7 @@ import { TurnOrder } from "boardgame.io/core";
 export type VennsCodeState = {
   roles: {
     TeamAQuestioner: string | null;
-    TeamAAnswerer: string | null;
     TeamBQuestioner: string | null;
-    TeamBAnswerer: string | null;
   };
   teams: {
     TeamA: string[];
@@ -20,9 +18,7 @@ const VennsCode: Game<VennsCodeState> = {
   setup: () => ({
     roles: {
       TeamAQuestioner: null,
-      TeamAAnswerer: null,
       TeamBQuestioner: null,
-      TeamBAnswerer: null,
     },
     teams: { TeamA: [], TeamB: [] },
   }),
@@ -39,21 +35,24 @@ const VennsCode: Game<VennsCodeState> = {
           // Shuffle the players
           const shuffledPlayers = random.Shuffle(ctx.playOrder);
 
-          // Assign roles and teams based on the shuffled order
+          // Assign Questioner for each team
           G.roles.TeamAQuestioner = shuffledPlayers[0];
-          G.roles.TeamAAnswerer = shuffledPlayers[1];
-          G.roles.TeamBQuestioner = shuffledPlayers[2];
-          G.roles.TeamBAnswerer = shuffledPlayers[3];
+          G.roles.TeamBQuestioner = shuffledPlayers[1];
 
-          G.teams.TeamA = [shuffledPlayers[0], shuffledPlayers[1]];
-          G.teams.TeamB = [shuffledPlayers[2], shuffledPlayers[3]];
+          // All other players are Answerers
+          // Split the remaining players as evenly as possible between the two teams
+          const remainingPlayers = shuffledPlayers.slice(2);
+          const mid = Math.ceil(remainingPlayers.length / 2);
+
+          G.teams.TeamA = [
+            shuffledPlayers[0],
+            ...remainingPlayers.slice(0, mid),
+          ];
+          G.teams.TeamB = [shuffledPlayers[1], ...remainingPlayers.slice(mid)];
         },
       },
       endIf: ({ G }) =>
-        G.roles.TeamAQuestioner !== null &&
-        G.roles.TeamAAnswerer !== null &&
-        G.roles.TeamBQuestioner !== null &&
-        G.roles.TeamBAnswerer !== null,
+        G.roles.TeamAQuestioner !== null && G.roles.TeamBQuestioner !== null,
       next: "mainPhase",
     },
     mainPhase: {

@@ -47,6 +47,7 @@ const ListGamesView: React.FC<{ L: LobbyRendererProps }> = ({ L }) => {
                   id="gameNameSelect"
                   {...register("gameName", { required: true })}
                   onChange={(e) => setValue("gameName", e.target.value)}
+                  defaultValue={"venns-code"}
                 >
                   {gameNames.map((name) => (
                     <option key={name} value={name}>
@@ -64,6 +65,7 @@ const ListGamesView: React.FC<{ L: LobbyRendererProps }> = ({ L }) => {
                   <option value="2">2</option>
                   <option value="3">3</option>
                   <option value="4">4</option>
+                  <option value="5">5</option>
                 </select>
               </FormControl>
               <Button type="submit" color="primary">

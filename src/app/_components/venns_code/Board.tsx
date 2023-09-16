@@ -1,12 +1,11 @@
-import { Button, Typography, Container, Paper, Grid } from "@mui/material";
-import { VennsCodeState } from "./Game";
-import React from "react";
+import { Button, Container, Typography } from "@mui/material";
 import type { BoardProps as BGIOBoardProps } from "boardgame.io/react";
+import { VennsCodeState } from "./Game";
 
 interface VennsCodeBoardProps extends BGIOBoardProps<VennsCodeState> {}
 
 export function VennsCodeBoard(props: VennsCodeBoardProps) {
-  const { ctx, G, moves } = props;
+  const { ctx, G, moves, playerID } = props;
 
   // Handle the button click to shuffle roles and teams
   const handleShuffleClick = () => {
@@ -15,7 +14,7 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
 
   return (
     <Container>
-      {ctx.phase === "setupPhase" && (
+      {ctx.phase === "setupPhase" && playerID === "0" && (
         <Container>
           <Button
             variant="contained"
@@ -35,13 +34,13 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
           Team A 出題者: {G.roles.TeamAQuestioner}
         </Typography>
         <Typography variant="body1">
-          Team A 回答者: {G.roles.TeamAAnswerer}
+          Team A 回答者: {G.teams.TeamA.slice(1).join(", ")}
         </Typography>
         <Typography variant="body1">
           Team B 出題者: {G.roles.TeamBQuestioner}
         </Typography>
         <Typography variant="body1">
-          Team B 回答者: {G.roles.TeamBAnswerer}
+          Team B 回答者: {G.teams.TeamB.slice(1).join(", ")}
         </Typography>
       </Container>
       <Container>
