@@ -17,6 +17,7 @@ const ListGamesView: React.FC<{ L: LobbyRendererProps }> = ({ L }) => {
     formState: { errors },
   } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    // TODO: プライベートルームの作成. lobbyClientを使ってunlisted=trueにする
     await L.handleCreateMatch(data.gameName, parseInt(data.playerCount));
   };
 
