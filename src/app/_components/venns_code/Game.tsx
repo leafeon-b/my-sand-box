@@ -1,4 +1,5 @@
 import { Game } from "boardgame.io";
+import { TurnOrder } from "boardgame.io/core";
 
 export const Teams = {
   A: "A",
@@ -57,7 +58,11 @@ export interface VennsCodeState {
 const VennsCode: Game<VennsCodeState> = {
   name: "venns-code",
   setup: () => {
-    const topics: VennsCodeState["topics"] = {};
+    const topics: VennsCodeState["topics"] = {
+      a: "",
+      b: "",
+      c: "",
+    };
 
     const roles: { [playerID: string]: Roles } = {};
     const teams: { [playerID: string]: Teams } = {};
@@ -80,13 +85,6 @@ const VennsCode: Game<VennsCodeState> = {
       start: true,
       moves: {
         endSetupPhase: ({ G, events }) => {
-          const gmPlayerID = Object.keys(G.roles).find(
-            (pid) => G.roles[pid] === Roles.GM,
-          );
-          if (gmPlayerID) {
-            events.setActivePlayers({ currentPlayer: gmPlayerID });
-          }
-
           events.endPhase();
         },
         shuffleRolesAndTeams: ({ G, ctx, random }) => {
@@ -127,6 +125,22 @@ const VennsCode: Game<VennsCodeState> = {
       next: "assignTopicPhase",
     },
     assignTopicPhase: {
+      turn: {
+        order: {
+          ...TurnOrder.DEFAULT,
+          first: ({ G }) => {
+            // GMのplayerIDを返すロジック
+            const gm = Object.entries(G.roles).find(
+              ([id, role]) => role === Roles.GM,
+            );
+            if (!gm) {
+              throw new Error("GMが存在しません");
+            }
+            const playerID = gm[0];
+            return Number(playerID);
+          },
+        },
+      },
       moves: {
         endAssignTopicPhase: ({ G, events, playerID }) => {
           // GMのみがこのmoveを呼び出せるようにする

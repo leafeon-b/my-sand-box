@@ -1,18 +1,19 @@
 import { Button, Container, Typography } from "@mui/material";
 import type { BoardProps } from "boardgame.io/react";
-import { Roles, Sets, Teams, VennsCodeState } from "./Game";
+import { useState } from "react";
+import { Roles, Sets, VennsCodeState } from "./Game";
 
 interface VennsCodeBoardProps extends BoardProps<VennsCodeState> {
   matchData: Array<{ id: number; name: string }>;
 }
 
-// const [topics, setTopics] = useState<{ a: string; b: string; c: string }>({
-//   a: "",
-//   b: "",
-//   c: ""
-// });
-
 export function VennsCodeBoard(props: VennsCodeBoardProps) {
+  const [topics, setTopics] = useState<Record<Sets, string>>({
+    a: "",
+    b: "",
+    c: "",
+  });
+
   const { ctx, G, moves, playerID, matchData } = props;
   const isGM = G.roles[playerID || ""] === Roles.GM;
 
@@ -20,6 +21,15 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
   const handleShuffleClick = () => {
     moves.shuffleRolesAndTeams();
   };
+
+  const handleTopicChange =
+    (set: keyof typeof topics) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setTopics({
+        ...topics,
+        [set]: event.target.value,
+      });
+    };
 
   // 役職やチームが割り当てられていないプレイヤーがいるか確認
   const playerIDs = matchData.map((item) => item.id.toString());
@@ -61,16 +71,14 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
           </div>
         ))}
         {/* For GM: Assign topics */}
-        {isGM && ctx.phase === "setup" && (
+        {isGM && ctx.phase === "assignTopicPhase" && (
           <div>
             {Object.keys(G.topics).map((setID) => (
               <div key={setID}>
                 <input
                   type="text"
                   placeholder={`トピックを入力: ${setID}`}
-                  onChange={(e) =>
-                    moves.assignTopic(setID as Sets, e.target.value)
-                  }
+                  onChange={(e) => handleTopicChange(setID as Sets)(e)}
                 />
               </div>
             ))}
@@ -97,9 +105,9 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
         <div>チーム A: {G.score.teamA} ポイント</div>
         <div>チーム B: {G.score.teamB} ポイント</div>
         <div>
-          {ctx.phase === "setupPhase" && props.playerID === "0" && (
+          {ctx.phase === "setupPhase" && playerID === "0" && (
             <Button
-              onClick={() => props.moves.endSetupPhase()}
+              onClick={() => moves.endSetupPhase()}
               disabled={hasUnassignedPlayers}
             >
               Setup完了
@@ -108,7 +116,15 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
           {ctx.phase === "assignTopicPhase" &&
             playerID &&
             G.roles[playerID] === Roles.GM && (
-              <Button onClick={() => props.moves.endAssignTopicPhase()}>
+              <Button
+                onClick={() => {
+                  const topicKeys = Object.keys(topics) as Sets[];
+                  for (const setID of topicKeys) {
+                    moves.assignTopic(setID, topics[setID]);
+                  }
+                  moves.endAssignTopicPhase();
+                }}
+              >
                 Topic割り当て完了
               </Button>
             )}
@@ -119,7 +135,10 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
           <div>Current Phase: {ctx.phase}</div>
           <div>
             {ctx.phase === "mainPhase" && (
-              <div>現在のターン: チーム {G.teams[ctx.currentPlayer]}</div>
+              <div>
+                現在のターン: チーム {G.teams[ctx.currentPlayer]},{" "}
+                {ctx.currentPlayer}
+              </div>
             )}
           </div>
         </Typography>
