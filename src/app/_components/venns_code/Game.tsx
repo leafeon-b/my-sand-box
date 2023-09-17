@@ -1,74 +1,166 @@
 import { Game } from "boardgame.io";
-import { TurnOrder } from "boardgame.io/core";
 
-export type VennsCodeState = {
+export const Teams = {
+  A: "A",
+  B: "B",
+  GM: "GM",
+} as const;
+
+export type Teams = (typeof Teams)[keyof typeof Teams];
+
+export const Roles = {
+  Questioner: "Questioner",
+  Answerer: "Answerer",
+  GM: "GM",
+} as const;
+
+export type Roles = (typeof Roles)[keyof typeof Roles];
+
+export const Sets = {
+  A: "a",
+  B: "b",
+  C: "c",
+} as const;
+
+export type Sets = (typeof Sets)[keyof typeof Sets];
+
+export interface Guess {
+  team: Teams;
+  setID: Sets;
+  topicGuess: string;
+}
+
+export interface Hint {
+  team: Teams;
+  region: string;
+  word: string;
+}
+
+export interface VennsCodeState {
+  topics: {
+    [key in Sets]?: string;
+  };
   roles: {
-    GM: string | null;
-    TeamAQuestioner: string | null;
-    TeamBQuestioner: string | null;
+    [playerID: string]: Roles;
   };
   teams: {
-    TeamA: string[];
-    TeamB: string[];
+    [playerID: string]: Teams;
   };
-};
+  hints: Array<Hint>;
+  guesses: Array<Guess>;
+  score: {
+    teamA: number;
+    teamB: number;
+  };
+}
 
 const VennsCode: Game<VennsCodeState> = {
   name: "venns-code",
+  setup: () => {
+    const topics: VennsCodeState["topics"] = {};
 
-  setup: () => ({
-    roles: {
-      GM: null,
-      TeamAQuestioner: null,
-      TeamBQuestioner: null,
-    },
-    teams: { TeamA: [], TeamB: [] },
-  }),
+    const roles: { [playerID: string]: Roles } = {};
+    const teams: { [playerID: string]: Teams } = {};
 
-  turn: {
-    order: TurnOrder.DEFAULT,
+    return {
+      topics,
+      roles,
+      teams,
+      hints: [],
+      guesses: [],
+      score: {
+        teamA: 0,
+        teamB: 0,
+      },
+    };
   },
 
   phases: {
     setupPhase: {
       start: true,
       moves: {
+        endSetupPhase: ({ G, events }) => {
+          const gmPlayerID = Object.keys(G.roles).find(
+            (pid) => G.roles[pid] === Roles.GM,
+          );
+          if (gmPlayerID) {
+            events.setActivePlayers({ currentPlayer: gmPlayerID });
+          }
+
+          events.endPhase();
+        },
         shuffleRolesAndTeams: ({ G, ctx, random }) => {
           // Shuffle the players
           const shuffledPlayers = random.Shuffle(ctx.playOrder);
 
           // Assign GM
-          G.roles.GM = shuffledPlayers[0];
+          G.roles[shuffledPlayers[0]] = Roles.GM;
+          G.teams[shuffledPlayers[0]] = Teams.GM;
 
           // Assign Questioner for each team
-          G.roles.TeamAQuestioner = shuffledPlayers[1];
-          G.roles.TeamBQuestioner = shuffledPlayers[2];
+          G.roles[shuffledPlayers[1]] = Roles.Questioner;
+          G.teams[shuffledPlayers[1]] = Teams.A;
+          G.roles[shuffledPlayers[2]] = Roles.Questioner;
+          G.teams[shuffledPlayers[2]] = Teams.B;
 
           // All other players are Answerers
           // Split the remaining players as evenly as possible between the two teams
           const remainingPlayers = shuffledPlayers.slice(3);
-          const mid = Math.ceil(remainingPlayers.length / 2);
 
-          G.teams.TeamA = [
-            shuffledPlayers[1],
-            ...remainingPlayers.slice(0, mid),
-          ];
-          G.teams.TeamB = [shuffledPlayers[2], ...remainingPlayers.slice(mid)];
+          for (const player of remainingPlayers) {
+            G.roles[player] = Roles.Answerer;
+          }
+
+          const mid = Math.ceil(remainingPlayers.length / 2);
+          const teamAPlayers = remainingPlayers.slice(0, mid);
+          const teamBPlayers = remainingPlayers.slice(mid);
+
+          for (const player of teamAPlayers) {
+            G.teams[player] = Teams.A;
+          }
+
+          for (const player of teamBPlayers) {
+            G.teams[player] = Teams.B;
+          }
         },
       },
-      endIf: ({ G }) =>
-        G.roles.GM !== null &&
-        G.roles.TeamAQuestioner !== null &&
-        G.roles.TeamBQuestioner !== null,
+      next: "assignTopicPhase",
+    },
+    assignTopicPhase: {
+      moves: {
+        endAssignTopicPhase: ({ G, events, playerID }) => {
+          // GMのみがこのmoveを呼び出せるようにする
+          if (G.roles[playerID] !== Roles.GM) {
+            throw new Error(`GMのみがお題の割り当てを終了できます`);
+          }
+          events.endPhase();
+        },
+        assignTopic: ({ G }, setID: Sets, topic: string) => {
+          G.topics[setID] = topic;
+        },
+      },
       next: "mainPhase",
     },
     mainPhase: {
-      // Main phase logic will be implemented later
-    },
-  },
+      moves: {
+        giveHint: ({ G }, team: Teams, region: string, word: string) => {
+          // Check that the team is either 'A' or 'B'
+          if (team === Teams.GM) {
+            throw new Error(`Invalid team for hint: ${team}`);
+          }
+          G.hints.push({ team, region, word });
+        },
 
-  moves: {
-    // Main game moves will be implemented later
+        makeGuess: ({ G }, team: Teams, setID: Sets, topicGuess: string) => {
+          // Check that the team is either 'A' or 'B'
+          if (team === Teams.GM) {
+            throw new Error(`Invalid team for guess: ${team}`);
+          }
+          G.guesses.push({ team, setID, topicGuess });
+          // 正解判定とスコアの計算もここで行う (詳細は後で追加)
+        },
+      },
+    },
   },
 };
 
