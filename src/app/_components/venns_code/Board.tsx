@@ -1,6 +1,7 @@
 import { Button, Container, Typography } from "@mui/material";
 import type { BoardProps } from "boardgame.io/react";
 import { useState } from "react";
+import ChartVenn from "./ChartVenn";
 import { Roles, Sets, VennsCodeState } from "./Game";
 
 interface VennsCodeBoardProps extends BoardProps<VennsCodeState> {
@@ -143,6 +144,7 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
           </div>
         </Typography>
       </Container>
+      <ChartVenn />
     </Container>
   );
 }
