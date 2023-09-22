@@ -2,7 +2,7 @@ import { Button, Container, Typography } from "@mui/material";
 import type { BoardProps } from "boardgame.io/react";
 import { useState } from "react";
 import ChartVenn from "./ChartVenn";
-import { Roles, Sets, VennsCodeState } from "./Game";
+import { Roles, Sets, VennsCodeState } from "./Model";
 
 interface VennsCodeBoardProps extends BoardProps<VennsCodeState> {
   matchData: Array<{ id: number; name: string }>;
