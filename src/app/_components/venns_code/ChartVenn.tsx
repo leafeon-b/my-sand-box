@@ -48,6 +48,9 @@ const ChartVenn = () => {
         "black",
       ],
       onClick: (event: ChartEvent, elements: ActiveElement[], chart: Chart) => {
+        if (elements.length === 0) {
+          return;
+        }
         const clickedIndex = elements[0].index;
         const data = chart.data.datasets[0].data[clickedIndex];
         console.log("data: ", data);
