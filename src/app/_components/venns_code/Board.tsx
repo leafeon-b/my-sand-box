@@ -137,8 +137,8 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
           <div>
             {ctx.phase === "mainPhase" && (
               <div>
-                現在のターン: チーム {G.teams[ctx.currentPlayer]},{" "}
-                {ctx.currentPlayer}
+                現在のターン: チーム: {G.teams[currentPlayerId]}, ID:{" "}
+                {ctx.currentPlayer}, {currentPlayerName}
               </div>
             )}
           </div>
