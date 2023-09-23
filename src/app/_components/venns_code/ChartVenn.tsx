@@ -1,8 +1,9 @@
 import { ActiveElement, Chart, ChartEvent, LinearScale } from "chart.js";
 import { ArcSlice, VennDiagramController } from "chartjs-chart-venn";
 import { useEffect, useRef } from "react";
+import { ChartVennProps } from "./Model";
 
-const ChartVenn = () => {
+const ChartVenn: React.FC<ChartVennProps> = ({ onClick }) => {
   const canvasRef = useRef(null);
 
   const config = {
@@ -54,6 +55,8 @@ const ChartVenn = () => {
         const clickedIndex = elements[0].index;
         const data = chart.data.datasets[0].data[clickedIndex];
         console.log("data: ", data);
+        const areaLabel: string = data.sets;
+        onClick(areaLabel);
       },
     },
   };

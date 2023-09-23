@@ -1,3 +1,5 @@
+import type { BoardProps } from "boardgame.io/react";
+
 export const Teams = {
   A: "A",
   B: "B",
@@ -50,4 +52,12 @@ export interface VennsCodeState {
     teamA: number;
     teamB: number;
   };
+}
+
+export interface VennsCodeBoardProps extends BoardProps<VennsCodeState> {
+  matchData: Array<{ id: number; name: string }>;
+}
+
+export interface ChartVennProps {
+  onClick: (area: string) => void;
 }

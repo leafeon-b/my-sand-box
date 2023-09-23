@@ -137,7 +137,11 @@ const VennsCode: Game<VennsCodeState> = {
           if (team === Teams.GM) {
             throw new Error(`Invalid team for hint: ${team}`);
           }
-          G.hints.push({ team, region, word });
+          // とりあえずデバッグプリント
+          console.log("team: ", team);
+          console.log("region: ", region);
+          console.log("word: ", word);
+          // G.hints.push({ team, region, word });
         },
 
         makeGuess: ({ G }, team: Teams, setID: Sets, topicGuess: string) => {

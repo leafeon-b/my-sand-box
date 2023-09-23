@@ -1,14 +1,12 @@
 import { Button, Container, Typography } from "@mui/material";
-import type { BoardProps } from "boardgame.io/react";
 import { useState } from "react";
 import ChartVenn from "./ChartVenn";
-import { Roles, Sets, VennsCodeState } from "./Model";
-
-interface VennsCodeBoardProps extends BoardProps<VennsCodeState> {
-  matchData: Array<{ id: number; name: string }>;
-}
+import HintInputForm from "./HintInputForm";
+import { Roles, Sets, VennsCodeBoardProps } from "./Model";
 
 export function VennsCodeBoard(props: VennsCodeBoardProps) {
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+
   const [topics, setTopics] = useState<Record<Sets, string>>({
     a: "",
     b: "",
@@ -17,6 +15,11 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
 
   const { ctx, G, moves, playerID, matchData } = props;
   const isGM = G.roles[playerID || ""] === Roles.GM;
+
+  const currentPlayerId = ctx.currentPlayer;
+  const currentPlayerName = matchData.find(
+    ({ id }) => id === Number(currentPlayerId),
+  )?.name;
 
   // Handle the button click to shuffle roles and teams
   const handleShuffleClick = () => {
@@ -37,6 +40,32 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
   const hasUnassignedPlayers = playerIDs.some(
     (pid) => !G.roles[pid] || !G.teams[pid],
   );
+
+  const handleProvideHint = (hint: string) => {
+    if (!playerID) {
+      return;
+    }
+    if (!selectedRegion) {
+      console.log("ヒントを出すエリアを指定してください");
+      return;
+    }
+    const team = G.teams[playerID];
+    moves.provideHint(team, selectedRegion!, hint);
+    setSelectedRegion(null);
+  };
+  // const handleProvideHint = (hintRegion: string, hint: string) => {
+  //   // ここでhintをゲームのステートに保存するmoves関数を呼び出す
+  //   const hintTeam = playerID === "0" || playerID === "1" ? "A" : "B"; // 出題者のチームを決定
+  //   if (!playerID) {
+  //     return;
+  //   }
+  //   const team = G.teams[playerID];
+  //   moves.provideHint(team, hintRegion, hint);
+  // };
+
+  const handleVennDiagramClick = (region: string) => {
+    setSelectedRegion(region);
+  };
 
   return (
     <Container>
@@ -144,7 +173,8 @@ export function VennsCodeBoard(props: VennsCodeBoardProps) {
           </div>
         </Typography>
       </Container>
-      <ChartVenn />
+      <ChartVenn onClick={handleVennDiagramClick} />
+      <HintInputForm onSubmit={handleProvideHint} />
     </Container>
   );
 }
