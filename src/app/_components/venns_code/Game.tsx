@@ -2,6 +2,25 @@ import { Game } from "boardgame.io";
 import { TurnOrder } from "boardgame.io/core";
 import { VennsCodeState, Roles, Teams, Sets } from "./Model";
 
+function findTeamAndRole(team: Teams, role: Roles, G: VennsCodeState) {
+  const teamFilterIds = Object.entries(G.teams)
+    .filter(([_, tmpTeam]) => tmpTeam === team)
+    .map(([id, _]) => {
+      return id;
+    });
+  const roleFilterIds = Object.entries(G.roles)
+    .filter(([_, tmpRole]) => tmpRole === role)
+    .map(([id, _]) => {
+      return id;
+    });
+  const commonIds = teamFilterIds.filter((id) => roleFilterIds.includes(id));
+  return commonIds[0];
+}
+
+function findGM(G: VennsCodeState) {
+  return findTeamAndRole(Teams.GM, Roles.GM, G);
+}
+
 const VennsCode: Game<VennsCodeState> = {
   name: "venns-code",
   setup: () => {
@@ -103,6 +122,15 @@ const VennsCode: Game<VennsCodeState> = {
       next: "mainPhase",
     },
     mainPhase: {
+      turn: {
+        order: {
+          ...TurnOrder.DEFAULT,
+          first: ({ G }) => {
+            // 最初はチームAの出題者のターン
+            return Number(findTeamAndRole(Teams.A, Roles.Questioner, G));
+          },
+        },
+      },
       moves: {
         provideHint: ({ G }, team: Teams, region: string, word: string) => {
           // Check that the team is either 'A' or 'B'
