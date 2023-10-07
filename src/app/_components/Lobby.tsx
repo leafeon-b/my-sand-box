@@ -9,6 +9,8 @@ import { TicTacToeBoard } from "./tic_tac_toe/Board";
 import { TicTacToe } from "./tic_tac_toe/Game";
 import { TicTacToe4Board } from "./tic_tac_toe_4/Board";
 import { TicTacToe4 } from "./tic_tac_toe_4/Game";
+import { Codenames } from "./codenames/Game";
+import { CodenamesBoard } from "./codenames/Board";
 
 enum LobbyPhases {
   ENTER = "enter",
@@ -28,6 +30,7 @@ export const MyLobby: React.FC<MyLobbyProps> = () => {
       gameComponents={[
         { game: TicTacToe, board: TicTacToeBoard },
         { game: TicTacToe4, board: TicTacToe4Board },
+        { game: Codenames, board: CodenamesBoard },
       ]}
       renderer={(L) => {
         return (
