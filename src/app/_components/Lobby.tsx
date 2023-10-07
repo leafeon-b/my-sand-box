@@ -4,13 +4,11 @@ import { LobbyClient } from "boardgame.io/client";
 import { Lobby } from "boardgame.io/react";
 import EnterLobbyView from "./EnterLobbyView";
 import ListGamesView from "./ListGamesView";
+import RunningMatchView from "./RunningMatchView";
 import { TicTacToeBoard } from "./tic_tac_toe/Board";
 import { TicTacToe } from "./tic_tac_toe/Game";
 import { TicTacToe4Board } from "./tic_tac_toe_4/Board";
 import { TicTacToe4 } from "./tic_tac_toe_4/Game";
-import RunningMatchView from "./RunningMatchView";
-import VennsCode from "./venns_code/Game";
-import VennsCodeBoard from "./venns_code/Board";
 
 enum LobbyPhases {
   ENTER = "enter",
@@ -30,7 +28,6 @@ export const MyLobby: React.FC<MyLobbyProps> = () => {
       gameComponents={[
         { game: TicTacToe, board: TicTacToeBoard },
         { game: TicTacToe4, board: TicTacToe4Board },
-        { game: VennsCode, board: VennsCodeBoard },
       ]}
       renderer={(L) => {
         return (

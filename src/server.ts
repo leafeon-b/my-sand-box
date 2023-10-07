@@ -1,18 +1,17 @@
 import * as dotenv from "dotenv";
 
 import { Origins, Server } from "boardgame.io/server";
-import path from "path";
 import serve from "koa-static";
+import path from "path";
 import { TicTacToe } from "./app/_components/tic_tac_toe/Game";
 import { TicTacToe4 } from "./app/_components/tic_tac_toe_4/Game";
-import VennsCode from "./app/_components/venns_code/Game";
 
 dotenv.config();
 
 const PORT = parseInt(process.env.PORT ?? "8000");
 
 const server = Server({
-  games: [TicTacToe, TicTacToe4, VennsCode],
+  games: [TicTacToe, TicTacToe4],
   origins: [Origins.LOCALHOST],
 });
 
