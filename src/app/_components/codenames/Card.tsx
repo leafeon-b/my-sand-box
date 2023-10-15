@@ -11,7 +11,7 @@ export function Card(props: CardProps) {
   const { word, isOpen, team } = props;
   const color = (() => {
     const defaultColor = "#ffffe0";
-    if (!isOpen) return defaultColor;
+    if (!isOpen) return "#eaffea";
     switch (team) {
       case TeamValues.A:
         return "#dc143c";
