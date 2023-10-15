@@ -1,11 +1,22 @@
 import * as React from "react";
 import Stack from "@mui/material/Stack";
+import useSWR, { Fetcher } from "swr";
+
 import { Card } from "./Card";
 import { Teams } from "./Model";
 
 const DummyCard: React.FC<{ team: Teams }> = (props) => {
   const { team } = props;
-  return <Card word={"ダミー"} isOpen={true} team={team} />;
+  const fetcher: Fetcher<{ data: string[] }, string> = (...args) =>
+    fetch(...args).then((res) => res.json());
+  const { data, error } = useSWR("/api/words", fetcher);
+  if (error) {
+    return <div>Failed to load</div>;
+  }
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+  return <Card word={data.data[0]} isOpen={true} team={team} />;
 };
 
 const getRandomTeam = () => {
