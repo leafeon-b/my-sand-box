@@ -60,7 +60,7 @@ export const Codenames: Game<CodenamesState> = {
     };
   },
 
-  minPlayers: 4,
+  minPlayers: 1,
   maxPlayers: 4,
 
   moves: {
