@@ -32,7 +32,12 @@ export function Card(props: CardProps) {
   return (
     <Button
       variant="contained"
-      style={{ backgroundColor: color, color: "black" }}
+      style={{
+        backgroundColor: color,
+        color: "black",
+        width: "150px",
+        height: "60px",
+      }}
     >
       {word}
     </Button>

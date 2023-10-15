@@ -1,9 +1,35 @@
 import { Button, Container, Typography } from "@mui/material";
-import Cards from "./Cards";
 import { CodenamesBoardProps } from "./Model";
+import { useWords } from "@/app/_hooks/useWords";
+import Cards from "./Cards";
+import { cardNum } from "./Game";
+
+// リストからランダムにn個の要素を抽出する関数
+function getRandomElements<T>(list: T[], n: number): T[] {
+  if (n >= list.length) {
+    return [...list]; // リスト全体をコピーして返す
+  }
+
+  const shuffled = [...list]; // 元のリストをコピーしてシャッフル用に使用
+  const result: T[] = [];
+
+  // シャッフル
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // 要素を入れ替える
+  }
+
+  // 先頭からn個を抽出
+  for (let i = 0; i < n; i++) {
+    result.push(shuffled[i]);
+  }
+
+  return result;
+}
 
 export function CodenamesBoard(props: CodenamesBoardProps) {
   const { ctx, G, moves, playerID, matchData } = props;
+  const { words } = useWords();
 
   const currentPlayerId = ctx.currentPlayer;
   const currentPlayerName = matchData.find(
@@ -16,6 +42,18 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
 
   const handleResetClick = () => {
     moves.resetRolesAndTeams();
+  };
+
+  const handleSetCardsClick = () => {
+    if (!words) return;
+    if (words.length < cardNum) {
+      throw Error(`単語数が不足しています. ${cardNum}個必要です.`);
+    }
+    moves.setCards(getRandomElements(words, cardNum));
+  };
+
+  const handleResetCardsClick = () => {
+    moves.resetCards();
   };
 
   return (
@@ -51,16 +89,21 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
         <Typography variant="h5" gutterBottom>
           <div>Current Phase: {ctx.phase}</div>
           <div>
-            {ctx.phase === "mainPhase" && (
+            {
+              // {ctx.phase === "mainPhase" && (
               <div>
                 現在のターン: チーム: {G.teams[currentPlayerId]}, ID:{" "}
                 {ctx.currentPlayer}, {currentPlayerName}
               </div>
-            )}
+            }
           </div>
         </Typography>
       </Container>
-      <Cards />
+      <Cards cards={G.cards} />
+      <Container>
+        <Button onClick={handleSetCardsClick}>Set Words</Button>
+        <Button onClick={handleResetCardsClick}>Reset Words</Button>
+      </Container>
     </Container>
   );
 }

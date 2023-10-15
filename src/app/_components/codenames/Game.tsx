@@ -1,16 +1,33 @@
-// Game.ts
 import type { Game } from "boardgame.io";
-import { CodenamesState, Roles, Teams } from "./Model";
+import { Card, CodenamesState, Roles, Teams } from "./Model";
+
+export const cardNum = 25;
+
+const getRandomTeam: () => Teams = () => {
+  const keys = Object.keys(Teams) as Array<keyof typeof Teams>;
+  const randomIndex = Math.floor(Math.random() * keys.length);
+  return Teams[keys[randomIndex]];
+};
+
+const getEmptyCard: () => Card = () => ({
+  word: "",
+  team: Teams.NO_SIDE,
+  isOpen: true,
+});
 
 export const Codenames: Game<CodenamesState> = {
   name: "codenames",
   setup: () => {
     const roles: { [playerID: string]: Roles } = {};
     const teams: { [playerID: string]: Teams } = {};
+    const cards: Card[] = Array.from({ length: cardNum }, (_, i) =>
+      getEmptyCard(),
+    );
 
     return {
       roles,
       teams,
+      cards,
     };
   },
 
@@ -18,7 +35,19 @@ export const Codenames: Game<CodenamesState> = {
   maxPlayers: 4,
 
   moves: {
-    resetRolesAndTeams: ({ G, ctx, random }) => {
+    setCards: ({ G }, words: string[]) => {
+      for (let i = 0; i < G.cards.length; i++) {
+        G.cards[i] = {
+          word: words[i],
+          team: getRandomTeam(),
+          isOpen: true,
+        };
+      }
+    },
+    resetCards: ({ G }) => {
+      G.cards = Array.from({ length: cardNum }, (_, i) => getEmptyCard());
+    },
+    resetRolesAndTeams: ({ G }) => {
       G.roles = {};
       G.teams = {};
     },

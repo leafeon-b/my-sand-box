@@ -1,38 +1,27 @@
-import * as React from "react";
 import Stack from "@mui/material/Stack";
-import useSWR, { Fetcher } from "swr";
+import * as React from "react";
 
+import { Card as CardModel } from "./Model";
 import { Card } from "./Card";
-import { Teams } from "./Model";
+import { cardNum } from "./Game";
 
-const DummyCard: React.FC<{ team: Teams }> = (props) => {
-  const { team } = props;
-  const fetcher: Fetcher<{ data: string[] }, string> = (...args) =>
-    fetch(...args).then((res) => res.json());
-  const { data, error } = useSWR("/api/words", fetcher);
-  if (error) {
-    return <div>Failed to load</div>;
-  }
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-  return <Card word={data.data[0]} isOpen={true} team={team} />;
-};
+interface CardsProps {
+  cards: CardModel[];
+}
 
-const getRandomTeam = () => {
-  const keys = Object.keys(Teams) as Array<keyof typeof Teams>;
-  const randomIndex = Math.floor(Math.random() * keys.length);
-  return Teams[keys[randomIndex]];
-};
+console.assert(cardNum === 25);
 
-const Cards = () => {
+const Cards: React.FC<CardsProps> = (props) => {
+  const { cards } = props;
   return (
     <Stack direction="column" spacing={2}>
       {Array.from({ length: 5 }, (_, rowIndex) => (
         <Stack key={rowIndex} direction="row" spacing={2}>
-          {Array.from({ length: 5 }, (_, colIndex) => (
-            <DummyCard key={colIndex + 1} team={getRandomTeam()} />
-          ))}
+          {Array.from({ length: 5 }, (_, colIndex) => {
+            const index = rowIndex * 5 + colIndex; // (rox,col==5,5)
+            const { word, isOpen, team } = cards[index];
+            return <Card key={index} word={word} isOpen={isOpen} team={team} />;
+          })}
         </Stack>
       ))}
     </Stack>
