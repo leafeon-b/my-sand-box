@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { Teams } from "./Model";
+import { Teams, TeamValues } from "./Model";
 
 export interface CardProps {
   word: string;
@@ -13,13 +13,13 @@ export function Card(props: CardProps) {
     const defaultColor = "#ffffe0";
     if (!isOpen) return defaultColor;
     switch (team) {
-      case Teams.A:
+      case TeamValues.A:
         return "#dc143c";
-      case Teams.B:
+      case TeamValues.B:
         return "#4169e1";
-      case Teams.MINE:
+      case TeamValues.MINE:
         return "#555555";
-      case Teams.NO_SIDE:
+      case TeamValues.NO_SIDE:
       default:
         return defaultColor;
     }

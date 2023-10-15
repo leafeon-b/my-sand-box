@@ -1,20 +1,20 @@
 import type { BoardProps } from "boardgame.io/react";
 
-export const Teams = {
+export const TeamValues = {
   A: "A",
   B: "B",
   MINE: "MINE",
   NO_SIDE: "NO_SIDE",
 } as const;
 
-export type Teams = (typeof Teams)[keyof typeof Teams];
+export type Teams = (typeof TeamValues)[keyof typeof TeamValues];
 
-export const Roles = {
+export const RoleValues = {
   Master: "Master",
   Spy: "Spy",
 } as const;
 
-export type Roles = (typeof Roles)[keyof typeof Roles];
+export type Roles = (typeof RoleValues)[keyof typeof RoleValues];
 
 export interface Card {
   word: string;
