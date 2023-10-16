@@ -56,6 +56,10 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
     moves.resetCards();
   };
 
+  const handleCardClick = (id: number) => {
+    moves.openCard(id);
+  };
+
   return (
     <Container>
       <h1>Codenames</h1>
@@ -99,7 +103,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           </div>
         </Typography>
       </Container>
-      <Cards cards={G.cards} />
+      <Cards cards={G.cards} onCardClick={handleCardClick} />
       <Container>
         <Button onClick={handleSetCardsClick}>Set Words</Button>
         <Button onClick={handleResetCardsClick}>Reset Words</Button>

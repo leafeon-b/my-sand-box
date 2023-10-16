@@ -16,7 +16,8 @@ export const RoleValues = {
 
 export type Roles = (typeof RoleValues)[keyof typeof RoleValues];
 
-export interface Card {
+export interface CardType {
+  id: number;
   word: string;
   team: Teams;
   isOpen: boolean;
@@ -29,7 +30,7 @@ export interface CodenamesState {
   teams: {
     [playerID: string]: Teams;
   };
-  cards: Card[];
+  cards: CardType[];
 }
 
 export interface CodenamesBoardProps extends BoardProps<CodenamesState> {

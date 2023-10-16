@@ -1,6 +1,6 @@
 import type { Game } from "boardgame.io";
 import {
-  Card,
+  CardType,
   CodenamesState,
   RoleValues,
   Roles,
@@ -14,13 +14,14 @@ export const cardNumOfTeamB = 8;
 export const cardNumOfTeamMine = 1;
 export const cardNumOfTeamNoSide = 7;
 
-const getEmptyCard: () => Card = () => ({
+const getEmptyCard: (id: number) => CardType = (id) => ({
+  id: id,
   word: "",
   team: TeamValues.NO_SIDE,
   isOpen: true,
 });
 
-const assignTeamOfCards = (cards: Card[]) => {
+const assignTeamOfCards = (cards: CardType[]) => {
   // [A, A, ..., A, B, B, ..., B, MINE, NO_SIDE, NO_SIDE, ..., NO_SIDE]のような配列を作る
   const teams: Teams[] = new Array(cardNum)
     .fill(TeamValues.A, 0, cardNumOfTeamA)
@@ -49,8 +50,8 @@ export const Codenames: Game<CodenamesState> = {
   setup: () => {
     const roles: { [playerID: string]: Roles } = {};
     const teams: { [playerID: string]: Teams } = {};
-    const cards: Card[] = Array.from({ length: cardNum }, (_, i) =>
-      getEmptyCard(),
+    const cards: CardType[] = Array.from({ length: cardNum }, (_, i) =>
+      getEmptyCard(i),
     );
 
     return {
@@ -64,9 +65,16 @@ export const Codenames: Game<CodenamesState> = {
   maxPlayers: 4,
 
   moves: {
+    openCard: ({ G }, id: number) => {
+      const card = G.cards.find((c) => c.id == id);
+      if (card) {
+        card.isOpen = true;
+      }
+    },
     setCards: ({ G }, words: string[]) => {
       for (let i = 0; i < G.cards.length; i++) {
         G.cards[i] = {
+          id: i,
           word: words[i],
           team: TeamValues.NO_SIDE,
           isOpen: true,
@@ -75,7 +83,7 @@ export const Codenames: Game<CodenamesState> = {
       assignTeamOfCards(G.cards);
     },
     resetCards: ({ G }) => {
-      G.cards = Array.from({ length: cardNum }, (_, i) => getEmptyCard());
+      G.cards = Array.from({ length: cardNum }, (_, i) => getEmptyCard(i));
     },
     resetRolesAndTeams: ({ G }) => {
       G.roles = {};
