@@ -1,5 +1,5 @@
 import { Button, Container, Typography } from "@mui/material";
-import { CodenamesBoardProps } from "./Model";
+import { CodenamesBoardProps, RoleValues } from "./Model";
 import { useWords } from "@/app/_hooks/useWords";
 import Cards from "./Cards";
 import { cardNum } from "./Game";
@@ -35,6 +35,9 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const currentPlayerName = matchData.find(
     ({ id }) => id === Number(currentPlayerId),
   )?.name;
+
+  const isCardHidden =
+    playerID === null || G.roles[playerID] !== RoleValues.Master;
 
   const handleShuffleClick = () => {
     moves.shuffleRolesAndTeams();
@@ -103,7 +106,11 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           </div>
         </Typography>
       </Container>
-      <Cards cards={G.cards} hidden={true} onCardClick={handleCardClick} />
+      <Cards
+        cards={G.cards}
+        hidden={isCardHidden}
+        onCardClick={handleCardClick}
+      />
       <Container>
         <Button onClick={handleSetCardsClick}>Set Words</Button>
         <Button onClick={handleResetCardsClick}>Reset Words</Button>
