@@ -18,7 +18,7 @@ const getEmptyCard: (id: number) => CardType = (id) => ({
   id: id,
   word: "",
   team: TeamValues.NO_SIDE,
-  isOpen: true,
+  isOpen: false,
 });
 
 const assignTeamOfCards = (cards: CardType[]) => {
@@ -77,7 +77,7 @@ export const Codenames: Game<CodenamesState> = {
           id: i,
           word: words[i],
           team: TeamValues.NO_SIDE,
-          isOpen: true,
+          isOpen: false,
         };
       }
       assignTeamOfCards(G.cards);
