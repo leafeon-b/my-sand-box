@@ -103,7 +103,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           </div>
         </Typography>
       </Container>
-      <Cards cards={G.cards} onCardClick={handleCardClick} />
+      <Cards cards={G.cards} hidden={true} onCardClick={handleCardClick} />
       <Container>
         <Button onClick={handleSetCardsClick}>Set Words</Button>
         <Button onClick={handleResetCardsClick}>Reset Words</Button>

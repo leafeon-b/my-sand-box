@@ -7,13 +7,14 @@ import { cardNum } from "./Game";
 
 interface CardsProps {
   cards: CardType[];
+  hidden?: boolean;
   onCardClick: (id: number) => void;
 }
 
 console.assert(cardNum === 25);
 
 const Cards: React.FC<CardsProps> = (props) => {
-  const { cards, onCardClick } = props;
+  const { cards, hidden, onCardClick } = props;
   return (
     <Stack direction="column" spacing={2}>
       {Array.from({ length: 5 }, (_, rowIndex) => (
@@ -26,6 +27,7 @@ const Cards: React.FC<CardsProps> = (props) => {
                 key={id}
                 id={id}
                 word={word}
+                hidden={hidden}
                 isOpen={isOpen}
                 team={team}
                 onClick={onCardClick}

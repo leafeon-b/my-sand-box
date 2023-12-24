@@ -4,15 +4,17 @@ import { Teams, TeamValues } from "./Model";
 export interface CardProps {
   id: number;
   word: string;
+  hidden?: boolean;
   isOpen: boolean;
   team: Teams;
   onClick: (is: number) => void;
 }
 
 export function Card(props: CardProps) {
-  const { id, word, isOpen, team } = props;
+  const { id, word, hidden, isOpen, team } = props;
   const color = (() => {
     const defaultColor = "#ffffe0";
+    if (hidden) return "#eaffea";
     if (!isOpen) return "#eaffea";
     switch (team) {
       case TeamValues.A:
