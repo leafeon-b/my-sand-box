@@ -1,8 +1,9 @@
-import { Button, Container, Typography } from "@mui/material";
-import { CodenamesBoardProps, RoleValues } from "./Model";
 import { useWords } from "@/app/_hooks/useWords";
+import { Button, Container, Typography } from "@mui/material";
 import Cards from "./Cards";
 import { cardNum } from "./Game";
+import { CodenamesBoardProps, RoleValues } from "./Model";
+import HintForm from "./HintForm";
 
 // リストからランダムにn個の要素を抽出する関数
 function getRandomElements<T>(list: T[], n: number): T[] {
@@ -111,6 +112,8 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
         hidden={isCardHidden}
         onCardClick={handleCardClick}
       />
+      {currentPlayerId === playerID &&
+        G.roles[playerID] === RoleValues.Master && <HintForm />}
       <Container>
         <Button onClick={handleSetCardsClick}>Set Words</Button>
         <Button onClick={handleResetCardsClick}>Reset Words</Button>
