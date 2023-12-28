@@ -153,7 +153,7 @@ export const Codenames: Game<CodenamesState> = {
         G.teams[player] = Team.B;
       }
     },
-    endSetup: ({ G, ctx, events }) => {
+    endSetup: ({ events }) => {
       events.endPhase();
     },
   },
@@ -166,7 +166,7 @@ export const Codenames: Game<CodenamesState> = {
     main: {
       turn: {
         order: {
-          first: ({ G, ctx }) => {
+          first: ({ G }) => {
             return Number(findMaster(G, Team.A));
           },
           next: ({ G, ctx }) => {
