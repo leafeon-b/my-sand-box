@@ -4,6 +4,7 @@ import Cards from "./Cards";
 import { cardNum } from "./Game";
 import { CodenamesBoardProps, Hint, Role, Team } from "./Model";
 import HintForm, { HintFormInputs } from "./HintForm";
+import { SetupView } from "./SetupView";
 
 // リストからランダムにn個の要素を抽出する関数
 function getRandomElements<T>(list: T[], n: number): T[] {
@@ -75,24 +76,13 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
 
   return (
     <Container>
-      <h1>Codenames</h1>
       {playerID === "0" /* ゲームのホストが準備するためのコンポーネント */ && (
-        <Container>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleShuffleClick}
-          >
-            Shuffle Roles and Teams
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleResetClick}
-          >
-            Reset Roles and Teams
-          </Button>
-        </Container>
+        <SetupView
+          onShuffleTeamAndRoleClick={handleShuffleClick}
+          onResetTeamAndRoleClick={handleResetClick}
+          onSetCardsClick={handleSetCardsClick}
+          onResetCardsClick={handleResetCardsClick}
+        />
       )}
       <Container>
         <h2>プレイヤーと役職・チーム</h2>
@@ -127,10 +117,6 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
       {currentPlayerId === playerID && G.roles[playerID] === Role.Master && (
         <HintForm onSubmit={handleGiveHint} />
       )}
-      <Container>
-        <Button onClick={handleSetCardsClick}>Set Words</Button>
-        <Button onClick={handleResetCardsClick}>Reset Words</Button>
-      </Container>
     </Container>
   );
 }

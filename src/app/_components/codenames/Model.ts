@@ -43,3 +43,10 @@ export interface CodenamesState {
 export interface CodenamesBoardProps extends BoardProps<CodenamesState> {
   matchData: Array<{ id: number; name: string }>;
 }
+
+export interface SetupViewProps {
+  onShuffleTeamAndRoleClick: () => void;
+  onResetTeamAndRoleClick: () => void;
+  onSetCardsClick: () => void;
+  onResetCardsClick: () => void;
+}
