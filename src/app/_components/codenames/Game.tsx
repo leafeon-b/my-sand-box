@@ -83,6 +83,9 @@ export const Codenames: Game<CodenamesState> = {
   maxPlayers: 4,
 
   moves: {
+    endGuess: ({ events }) => {
+      events.endTurn();
+    },
     giveHint: ({ G, ctx, events }, hint: Hint) => {
       G.hint = hint;
       console.log(hint);

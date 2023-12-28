@@ -87,6 +87,10 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
     moves.giveHint(hint);
   };
 
+  const handleEndGuess = () => {
+    moves.endGuess();
+  };
+
   const setupViewEnabled = playerID === "0" && ctx.phase === "setup";
 
   return (
@@ -134,6 +138,11 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
       />
       {currentPlayerId === playerID && G.roles[playerID] === Role.Master && (
         <HintForm onSubmit={handleGiveHint} />
+      )}
+      {playerID !== null && Object.keys(activePlayers).includes(playerID) && (
+        <Button variant="contained" onClick={handleEndGuess}>
+          推測を終了する
+        </Button>
       )}
     </Container>
   );
