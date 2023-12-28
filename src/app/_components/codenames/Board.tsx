@@ -2,7 +2,7 @@ import { useWords } from "@/app/_hooks/useWords";
 import { Button, Container, Typography } from "@mui/material";
 import Cards from "./Cards";
 import { cardNum } from "./Game";
-import { CodenamesBoardProps, HintType, RoleValues, TeamValues } from "./Model";
+import { CodenamesBoardProps, Hint, Role, Team } from "./Model";
 import HintForm, { HintFormInputs } from "./HintForm";
 
 // リストからランダムにn個の要素を抽出する関数
@@ -32,14 +32,13 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const { ctx, G, moves, playerID, matchData } = props;
   const { words } = useWords();
 
-  const playerTeam = playerID === null ? TeamValues.NO_SIDE : G.teams[playerID];
+  const playerTeam = playerID === null ? Team.NO_SIDE : G.teams[playerID];
   const currentPlayerId = ctx.currentPlayer;
   const currentPlayerName = matchData.find(
     ({ id }) => id === Number(currentPlayerId),
   )?.name;
 
-  const isCardHidden =
-    playerID === null || G.roles[playerID] !== RoleValues.Master;
+  const isCardHidden = playerID === null || G.roles[playerID] !== Role.Master;
 
   const handleShuffleClick = () => {
     moves.shuffleRolesAndTeams();
@@ -66,7 +65,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   };
 
   const handleGiveHint = (data: HintFormInputs) => {
-    const hint: HintType = {
+    const hint: Hint = {
       keyword: data.keyword,
       count: data.count,
       team: playerTeam,
@@ -125,10 +124,9 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
         hidden={isCardHidden}
         onCardClick={handleCardClick}
       />
-      {currentPlayerId === playerID &&
-        G.roles[playerID] === RoleValues.Master && (
-          <HintForm onSubmit={handleGiveHint} />
-        )}
+      {currentPlayerId === playerID && G.roles[playerID] === Role.Master && (
+        <HintForm onSubmit={handleGiveHint} />
+      )}
       <Container>
         <Button onClick={handleSetCardsClick}>Set Words</Button>
         <Button onClick={handleResetCardsClick}>Reset Words</Button>

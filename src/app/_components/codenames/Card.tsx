@@ -1,12 +1,12 @@
 import { Button } from "@mui/material";
-import { Teams, TeamValues } from "./Model";
+import { TeamType, Team } from "./Model";
 
 export interface CardProps {
   id: number;
   word: string;
   hidden?: boolean;
   isOpen: boolean;
-  team: Teams;
+  team: TeamType;
   onClick: (is: number) => void;
 }
 
@@ -16,13 +16,13 @@ export function Card(props: CardProps) {
     const defaultColor = "#ffffe0";
     if (!isOpen && hidden) return "#eaffea";
     switch (team) {
-      case TeamValues.A:
+      case Team.A:
         return "#dc143c";
-      case TeamValues.B:
+      case Team.B:
         return "#4169e1";
-      case TeamValues.MINE:
+      case Team.MINE:
         return "#555555";
-      case TeamValues.NO_SIDE:
+      case Team.NO_SIDE:
       default:
         return defaultColor;
     }

@@ -1,43 +1,43 @@
 import type { BoardProps } from "boardgame.io/react";
 
-export const TeamValues = {
+export const Team = {
   A: "A",
   B: "B",
   MINE: "MINE",
   NO_SIDE: "NO_SIDE",
 } as const;
 
-export type Teams = (typeof TeamValues)[keyof typeof TeamValues];
+export type TeamType = (typeof Team)[keyof typeof Team];
 
-export const RoleValues = {
+export const Role = {
   Master: "Master",
   Spy: "Spy",
 } as const;
 
-export type Roles = (typeof RoleValues)[keyof typeof RoleValues];
+export type RoleType = (typeof Role)[keyof typeof Role];
 
-export interface CardType {
+export interface Card {
   id: number;
   word: string;
-  team: Teams;
+  team: TeamType;
   isOpen: boolean;
 }
 
-export interface HintType {
+export interface Hint {
   keyword: string;
   count: number;
-  team: Teams;
+  team: TeamType;
 }
 
 export interface CodenamesState {
   roles: {
-    [playerID: string]: Roles;
+    [playerID: string]: RoleType;
   };
   teams: {
-    [playerID: string]: Teams;
+    [playerID: string]: TeamType;
   };
-  cards: CardType[];
-  hint: HintType;
+  cards: Card[];
+  hint: Hint;
 }
 
 export interface CodenamesBoardProps extends BoardProps<CodenamesState> {

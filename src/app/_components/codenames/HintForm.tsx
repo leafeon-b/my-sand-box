@@ -1,12 +1,5 @@
 import SendIcon from "@mui/icons-material/Send";
-import {
-  Button,
-  FormControl,
-  Input,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Button, FormControl, Input, MenuItem, Select } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 export type HintFormInputs = {

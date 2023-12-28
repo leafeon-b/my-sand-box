@@ -1,12 +1,12 @@
 import type { Game } from "boardgame.io";
 import {
-  CardType,
+  Card,
   CodenamesState,
-  RoleValues,
-  Roles,
-  Teams,
-  TeamValues,
-  HintType,
+  Role,
+  RoleType,
+  TeamType,
+  Team,
+  Hint,
 } from "./Model";
 
 export const cardNum = 25;
@@ -15,24 +15,24 @@ export const cardNumOfTeamB = 8;
 export const cardNumOfTeamMine = 1;
 export const cardNumOfTeamNoSide = 7;
 
-const getEmptyCard: (id: number) => CardType = (id) => ({
+const getEmptyCard: (id: number) => Card = (id) => ({
   id: id,
   word: "",
-  team: TeamValues.NO_SIDE,
+  team: Team.NO_SIDE,
   isOpen: false,
 });
 
-const assignTeamOfCards = (cards: CardType[]) => {
+const assignTeamOfCards = (cards: Card[]) => {
   // [A, A, ..., A, B, B, ..., B, MINE, NO_SIDE, NO_SIDE, ..., NO_SIDE]のような配列を作る
-  const teams: Teams[] = new Array(cardNum)
-    .fill(TeamValues.A, 0, cardNumOfTeamA)
-    .fill(TeamValues.B, cardNumOfTeamA, cardNumOfTeamA + cardNumOfTeamB)
+  const teams: TeamType[] = new Array(cardNum)
+    .fill(Team.A, 0, cardNumOfTeamA)
+    .fill(Team.B, cardNumOfTeamA, cardNumOfTeamA + cardNumOfTeamB)
     .fill(
-      TeamValues.MINE,
+      Team.MINE,
       cardNumOfTeamA + cardNumOfTeamB,
       cardNumOfTeamA + cardNumOfTeamB + cardNumOfTeamMine,
     )
-    .fill(TeamValues.NO_SIDE, -cardNumOfTeamNoSide, -0);
+    .fill(Team.NO_SIDE, -cardNumOfTeamNoSide, -0);
 
   // シャッフル
   for (let i = teams.length - 1; i > 0; i--) {
@@ -49,15 +49,15 @@ const assignTeamOfCards = (cards: CardType[]) => {
 export const Codenames: Game<CodenamesState> = {
   name: "codenames",
   setup: () => {
-    const roles: { [playerID: string]: Roles } = {};
-    const teams: { [playerID: string]: Teams } = {};
-    const cards: CardType[] = Array.from({ length: cardNum }, (_, i) =>
+    const roles: { [playerID: string]: RoleType } = {};
+    const teams: { [playerID: string]: TeamType } = {};
+    const cards: Card[] = Array.from({ length: cardNum }, (_, i) =>
       getEmptyCard(i),
     );
-    const hint: HintType = {
+    const hint: Hint = {
       keyword: "現在のヒント",
       count: 0,
-      team: TeamValues.NO_SIDE,
+      team: Team.NO_SIDE,
     };
 
     return {
@@ -72,7 +72,7 @@ export const Codenames: Game<CodenamesState> = {
   maxPlayers: 4,
 
   moves: {
-    giveHint: ({ G }, hint: HintType) => {
+    giveHint: ({ G }, hint: Hint) => {
       G.hint = hint;
       console.log(hint);
     },
@@ -87,7 +87,7 @@ export const Codenames: Game<CodenamesState> = {
         G.cards[i] = {
           id: i,
           word: words[i],
-          team: TeamValues.NO_SIDE,
+          team: Team.NO_SIDE,
           isOpen: false,
         };
       }
@@ -105,17 +105,17 @@ export const Codenames: Game<CodenamesState> = {
       console.log(shuffledPlayers);
 
       // Assign Master for each team
-      G.roles[shuffledPlayers[0]] = RoleValues.Master;
-      G.teams[shuffledPlayers[0]] = TeamValues.A;
-      G.roles[shuffledPlayers[1]] = RoleValues.Master;
-      G.teams[shuffledPlayers[1]] = TeamValues.B;
+      G.roles[shuffledPlayers[0]] = Role.Master;
+      G.teams[shuffledPlayers[0]] = Team.A;
+      G.roles[shuffledPlayers[1]] = Role.Master;
+      G.teams[shuffledPlayers[1]] = Team.B;
 
       // All other players are Spy
       // Split the remaining players as evenly as possible between the two teams
       const remainingPlayers = shuffledPlayers.slice(2);
 
       for (const player of remainingPlayers) {
-        G.roles[player] = RoleValues.Spy;
+        G.roles[player] = Role.Spy;
       }
 
       const mid = Math.ceil(remainingPlayers.length / 2);
@@ -123,11 +123,11 @@ export const Codenames: Game<CodenamesState> = {
       const teamBPlayers = remainingPlayers.slice(mid);
 
       for (const player of teamAPlayers) {
-        G.teams[player] = TeamValues.A;
+        G.teams[player] = Team.A;
       }
 
       for (const player of teamBPlayers) {
-        G.teams[player] = TeamValues.B;
+        G.teams[player] = Team.B;
       }
     },
   },

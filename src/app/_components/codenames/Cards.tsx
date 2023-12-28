@@ -1,12 +1,12 @@
 import Stack from "@mui/material/Stack";
 import * as React from "react";
 
-import { CardType } from "./Model";
-import { Card } from "./Card";
+import { Card as CardModel } from "./Model";
+import { Card as CardView } from "./Card";
 import { cardNum } from "./Game";
 
 interface CardsProps {
-  cards: CardType[];
+  cards: CardModel[];
   hidden?: boolean;
   onCardClick: (id: number) => void;
 }
@@ -23,7 +23,7 @@ const Cards: React.FC<CardsProps> = (props) => {
             const index = rowIndex * 5 + colIndex; // (rox,col==5,5)
             const { id, word, isOpen, team } = cards[index];
             return (
-              <Card
+              <CardView
                 key={id}
                 id={id}
                 word={word}
