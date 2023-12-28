@@ -1,4 +1,4 @@
-import type { Game } from "boardgame.io";
+import type { Ctx, Game } from "boardgame.io";
 import {
   Card,
   CodenamesState,
@@ -14,6 +14,39 @@ export const cardNumOfTeamA = 9;
 export const cardNumOfTeamB = 8;
 export const cardNumOfTeamMine = 1;
 export const cardNumOfTeamNoSide = 7;
+
+const isTeamAWinning = (G: CodenamesState, ctx: Ctx) => {
+  const openedCard = G.cards.filter((card) => card.isOpen);
+  if (
+    openedCard.filter((card) => card.team === Team.A).length === cardNumOfTeamA
+  ) {
+    return true;
+  }
+  const currentTurnTeam = G.teams[ctx.currentPlayer];
+  if (
+    currentTurnTeam !== Team.A &&
+    openedCard.some((card) => card.team === Team.MINE)
+  ) {
+    return true;
+  }
+  return false;
+};
+const isTeamBWinning = (G: CodenamesState, ctx: Ctx) => {
+  const openedCard = G.cards.filter((card) => card.isOpen);
+  if (
+    openedCard.filter((card) => card.team === Team.B).length === cardNumOfTeamB
+  ) {
+    return true;
+  }
+  const currentTurnTeam = G.teams[ctx.currentPlayer];
+  if (
+    currentTurnTeam !== Team.B &&
+    openedCard.some((card) => card.team === Team.MINE)
+  ) {
+    return true;
+  }
+  return false;
+};
 
 const getEmptyCard: (id: number) => Card = (id) => ({
   id: id,
@@ -81,6 +114,15 @@ export const Codenames: Game<CodenamesState> = {
 
   minPlayers: 1,
   maxPlayers: 4,
+
+  endIf: ({ G, ctx }) => {
+    if (isTeamAWinning(G, ctx)) {
+      return { winnerTeam: Team.A };
+    }
+    if (isTeamBWinning(G, ctx)) {
+      return { winnerTeam: Team.B };
+    }
+  },
 
   moves: {
     endGuess: ({ events }) => {

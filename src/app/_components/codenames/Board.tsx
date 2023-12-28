@@ -33,6 +33,11 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const { ctx, G, moves, playerID, matchData } = props;
   const { words } = useWords();
 
+  let winnerTeam = Team.NO_SIDE;
+  if (ctx.gameover) {
+    winnerTeam = ctx.gameover.winnerTeam;
+  }
+
   const playerTeam = playerID === null ? Team.NO_SIDE : G.teams[playerID];
   const currentPlayerId = ctx.currentPlayer;
   const currentPlayerName = matchData.find(
@@ -127,6 +132,9 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           <div>Active Players:</div>
           <List>{ActivePlayersListItems}</List>
         </Typography>
+        {winnerTeam !== Team.NO_SIDE && (
+          <Typography>チーム{winnerTeam}の勝利</Typography>
+        )}
         <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
           {G.hint.keyword}, {G.hint.count}
         </div>
