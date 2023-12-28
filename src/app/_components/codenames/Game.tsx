@@ -6,6 +6,7 @@ import {
   Roles,
   Teams,
   TeamValues,
+  HintType,
 } from "./Model";
 
 export const cardNum = 25;
@@ -67,6 +68,10 @@ export const Codenames: Game<CodenamesState> = {
   maxPlayers: 4,
 
   moves: {
+    giveHint: ({ G }, hint: HintType) => {
+      G.hint = hint.keyword;
+      console.log(hint);
+    },
     openCard: ({ G }, id: number) => {
       const card = G.cards.find((c) => c.id == id);
       if (card) {

@@ -2,8 +2,8 @@ import { useWords } from "@/app/_hooks/useWords";
 import { Button, Container, Typography } from "@mui/material";
 import Cards from "./Cards";
 import { cardNum } from "./Game";
-import { CodenamesBoardProps, RoleValues } from "./Model";
-import HintForm from "./HintForm";
+import { CodenamesBoardProps, HintType, RoleValues, TeamValues } from "./Model";
+import HintForm, { HintFormInputs } from "./HintForm";
 
 // リストからランダムにn個の要素を抽出する関数
 function getRandomElements<T>(list: T[], n: number): T[] {
@@ -32,6 +32,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const { ctx, G, moves, playerID, matchData } = props;
   const { words } = useWords();
 
+  const playerTeam = playerID === null ? TeamValues.NO_SIDE : G.teams[playerID];
   const currentPlayerId = ctx.currentPlayer;
   const currentPlayerName = matchData.find(
     ({ id }) => id === Number(currentPlayerId),
@@ -62,6 +63,15 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
 
   const handleCardClick = (id: number) => {
     moves.openCard(id);
+  };
+
+  const handleGiveHint = (data: HintFormInputs) => {
+    const hint: HintType = {
+      keyword: data.keyword,
+      count: data.count,
+      team: playerTeam,
+    };
+    moves.giveHint(hint);
   };
 
   return (
@@ -116,7 +126,9 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
         onCardClick={handleCardClick}
       />
       {currentPlayerId === playerID &&
-        G.roles[playerID] === RoleValues.Master && <HintForm />}
+        G.roles[playerID] === RoleValues.Master && (
+          <HintForm onSubmit={handleGiveHint} />
+        )}
       <Container>
         <Button onClick={handleSetCardsClick}>Set Words</Button>
         <Button onClick={handleResetCardsClick}>Reset Words</Button>

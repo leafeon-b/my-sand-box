@@ -23,6 +23,12 @@ export interface CardType {
   isOpen: boolean;
 }
 
+export interface HintType {
+  keyword: string;
+  count: number;
+  team: Teams;
+}
+
 export interface CodenamesState {
   roles: {
     [playerID: string]: Roles;
