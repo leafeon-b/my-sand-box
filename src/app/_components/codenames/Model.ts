@@ -31,6 +31,7 @@ export interface CodenamesState {
     [playerID: string]: Teams;
   };
   cards: CardType[];
+  hint: string;
 }
 
 export interface CodenamesBoardProps extends BoardProps<CodenamesState> {

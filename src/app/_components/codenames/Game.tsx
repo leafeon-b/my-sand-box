@@ -53,11 +53,13 @@ export const Codenames: Game<CodenamesState> = {
     const cards: CardType[] = Array.from({ length: cardNum }, (_, i) =>
       getEmptyCard(i),
     );
+    const hint = "現在のヒント";
 
     return {
       roles,
       teams,
       cards,
+      hint,
     };
   },
 
