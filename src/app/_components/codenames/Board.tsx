@@ -1,5 +1,5 @@
 import { useWords } from "@/app/_hooks/useWords";
-import { Button, Container, Typography } from "@mui/material";
+import { Button, Container, List, ListItem, Typography } from "@mui/material";
 import Cards from "./Cards";
 import { cardNum } from "./Game";
 import { CodenamesBoardProps, Hint, Role, Team } from "./Model";
@@ -38,6 +38,15 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const currentPlayerName = matchData.find(
     ({ id }) => id === Number(currentPlayerId),
   )?.name;
+  const activePlayers = ctx.activePlayers ?? {};
+  const ActivePlayersListItems = Object.keys(activePlayers).map((playerID) => {
+    return (
+      <ListItem key={playerID}>
+        {matchData.find((player) => player.id.toString() === playerID)?.name}:{" "}
+        {activePlayers[playerID]}
+      </ListItem>
+    );
+  });
 
   const isCardHidden = playerID === null || G.roles[playerID] !== Role.Master;
 
@@ -104,6 +113,8 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
               </div>
             }
           </div>
+          <div>Active Players:</div>
+          <List>{ActivePlayersListItems}</List>
         </Typography>
         <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
           {G.hint.keyword}, {G.hint.count}
