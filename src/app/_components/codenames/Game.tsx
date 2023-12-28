@@ -54,7 +54,11 @@ export const Codenames: Game<CodenamesState> = {
     const cards: CardType[] = Array.from({ length: cardNum }, (_, i) =>
       getEmptyCard(i),
     );
-    const hint = "現在のヒント";
+    const hint: HintType = {
+      keyword: "現在のヒント",
+      count: 0,
+      team: TeamValues.NO_SIDE,
+    };
 
     return {
       roles,
@@ -69,7 +73,7 @@ export const Codenames: Game<CodenamesState> = {
 
   moves: {
     giveHint: ({ G }, hint: HintType) => {
-      G.hint = hint.keyword;
+      G.hint = hint;
       console.log(hint);
     },
     openCard: ({ G }, id: number) => {

@@ -117,7 +117,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           </div>
         </Typography>
         <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
-          {G.hint}
+          {G.hint.keyword}, {G.hint.count}
         </div>
       </Container>
       <Cards
