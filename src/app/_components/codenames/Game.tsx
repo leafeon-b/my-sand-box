@@ -46,9 +46,20 @@ const assignTeamOfCards = (cards: Card[]) => {
   }
 };
 
+const findMaster = (G: CodenamesState, team: TeamType) => {
+  const teams: string[] = Object.keys(G.teams).filter(
+    (id) => G.teams[id] === team,
+  );
+  const masters: string[] = Object.keys(G.roles).filter(
+    (id) => G.roles[id] === Role.Master,
+  );
+  return masters.filter((element) => teams.includes(element))[0];
+};
+
 export const Codenames: Game<CodenamesState> = {
   name: "codenames",
-  setup: () => {
+  setup: ({ events }) => {
+    events.setStage;
     const roles: { [playerID: string]: RoleType } = {};
     const teams: { [playerID: string]: TeamType } = {};
     const cards: Card[] = Array.from({ length: cardNum }, (_, i) =>
@@ -142,7 +153,38 @@ export const Codenames: Game<CodenamesState> = {
         G.teams[player] = Team.B;
       }
     },
+    endSetup: ({ G, ctx, events }) => {
+      events.endPhase();
+    },
   },
+
+  phases: {
+    setup: {
+      start: true,
+      next: "main",
+    },
+    main: {
+      turn: {
+        order: {
+          first: ({ G, ctx }) => {
+            return Number(findMaster(G, Team.A));
+          },
+          next: ({ G, ctx }) => {
+            const currentTurnTeam = G.teams[ctx.currentPlayer];
+            if (currentTurnTeam === Team.A) {
+              return Number(findMaster(G, Team.B));
+            }
+            if (currentTurnTeam === Team.B) {
+              return Number(findMaster(G, Team.A));
+            } else {
+              return 0;
+            }
+          },
+        },
+      },
+    },
+  },
+
   turn: {
     stages: {
       select: {},

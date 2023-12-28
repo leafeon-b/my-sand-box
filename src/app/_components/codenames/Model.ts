@@ -49,4 +49,5 @@ export interface SetupViewProps {
   onResetTeamAndRoleClick: () => void;
   onSetCardsClick: () => void;
   onResetCardsClick: () => void;
+  onEndSetupClick: () => void;
 }

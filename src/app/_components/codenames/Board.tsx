@@ -70,6 +70,10 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
     moves.resetCards();
   };
 
+  const handleEndSetupClick = () => {
+    moves.endSetup();
+  };
+
   const handleCardClick = (id: number) => {
     moves.openCard(id);
   };
@@ -83,14 +87,17 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
     moves.giveHint(hint);
   };
 
+  const setupViewEnabled = playerID === "0" && ctx.phase === "setup";
+
   return (
     <Container>
-      {playerID === "0" /* ゲームのホストが準備するためのコンポーネント */ && (
+      {setupViewEnabled && (
         <SetupView
           onShuffleTeamAndRoleClick={handleShuffleClick}
           onResetTeamAndRoleClick={handleResetClick}
           onSetCardsClick={handleSetCardsClick}
           onResetCardsClick={handleResetCardsClick}
+          onEndSetupClick={handleEndSetupClick}
         />
       )}
       <Container>

@@ -7,6 +7,7 @@ export function SetupView(props: SetupViewProps) {
     onResetTeamAndRoleClick,
     onSetCardsClick,
     onResetCardsClick,
+    onEndSetupClick,
   } = props;
   return (
     <Container>
@@ -28,6 +29,9 @@ export function SetupView(props: SetupViewProps) {
         <Button onClick={onSetCardsClick}>Set Words</Button>
         <Button onClick={onResetCardsClick}>Reset Words</Button>
       </Container>
+      <Button color="success" onClick={onEndSetupClick}>
+        End Setup
+      </Button>
     </Container>
   );
 }
