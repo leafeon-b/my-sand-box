@@ -72,9 +72,21 @@ export const Codenames: Game<CodenamesState> = {
   maxPlayers: 4,
 
   moves: {
-    giveHint: ({ G }, hint: Hint) => {
+    giveHint: ({ G, ctx, events }, hint: Hint) => {
       G.hint = hint;
       console.log(hint);
+      const playerID = ctx.currentPlayer;
+      const playerTeam = G.teams[playerID];
+
+      const friendSpys: string[] = Object.keys(G.teams).filter(
+        (id) => G.teams[id] === playerTeam && id !== playerID,
+      ); // G.teamsからヒントを出したチームの味方スパイだけを抽出
+      const activePlayerValue = Object.fromEntries(
+        friendSpys.map((id) => [id, "select"]),
+      ); // mapを使用してキーを[id, "select"]の形式に変換し、Object.fromEntriesでオブジェクトに変換
+      events.setActivePlayers({
+        value: activePlayerValue,
+      });
     },
     openCard: ({ G }, id: number) => {
       const card = G.cards.find((c) => c.id == id);
@@ -129,6 +141,11 @@ export const Codenames: Game<CodenamesState> = {
       for (const player of teamBPlayers) {
         G.teams[player] = Team.B;
       }
+    },
+  },
+  turn: {
+    stages: {
+      select: {},
     },
   },
 };
