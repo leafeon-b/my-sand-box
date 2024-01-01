@@ -1,10 +1,18 @@
 import { useWords } from "@/app/_hooks/useWords";
-import { Button, Container, List, ListItem, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  Grid,
+  List,
+  ListItem,
+  Typography,
+} from "@mui/material";
 import Cards from "./Cards";
 import { cardNum } from "./Game";
 import HintForm, { HintFormInputs } from "./HintForm";
 import { CodenamesBoardProps, Hint, Role, Team } from "./Model";
 import { SetupView } from "./SetupView";
+import GameLogView from "./GameLogView";
 
 // リストからランダムにn個の要素を抽出する関数
 function getRandomElements<T>(list: T[], n: number): T[] {
@@ -30,7 +38,7 @@ function getRandomElements<T>(list: T[], n: number): T[] {
 }
 
 export function CodenamesBoard(props: CodenamesBoardProps) {
-  const { ctx, G, moves, playerID, matchData } = props;
+  const { ctx, G, moves, playerID, matchData, events } = props;
   const { words } = useWords();
 
   const playerTeam = playerID === null ? Team.NO_SIDE : G.teams[playerID];
@@ -139,23 +147,32 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           <div>Active Players:</div>
           <List>{ActivePlayersListItems}</List>
         </Typography>
-        <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
-          {G.hint.keyword}, {G.hint.count}
-        </div>
       </Container>
-      <Cards
-        cards={G.cards}
-        hidden={isCardHidden}
-        onCardClick={handleCardClick}
-      />
-      {currentPlayerId === playerID && G.roles[playerID] === Role.Master && (
-        <HintForm onSubmit={handleGiveHint} />
-      )}
-      {playerID !== null && Object.keys(activePlayers).includes(playerID) && (
-        <Button variant="contained" onClick={handleEndGuess}>
-          推測を終了する
-        </Button>
-      )}
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
+            {G.hint.keyword}, {G.hint.count}
+          </div>
+          <Cards
+            cards={G.cards}
+            hidden={isCardHidden}
+            onCardClick={handleCardClick}
+          />
+          {currentPlayerId === playerID &&
+            G.roles[playerID] === Role.Master && (
+              <HintForm onSubmit={handleGiveHint} />
+            )}
+          {playerID !== null &&
+            Object.keys(activePlayers).includes(playerID) && (
+              <Button variant="contained" onClick={handleEndGuess}>
+                推測を終了する
+              </Button>
+            )}
+        </Grid>
+        <Grid item xs={6}>
+          <GameLogView />
+        </Grid>
+      </Grid>
     </Container>
   );
 }
