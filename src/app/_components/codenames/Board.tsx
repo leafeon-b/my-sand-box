@@ -2,8 +2,8 @@ import { useWords } from "@/app/_hooks/useWords";
 import { Button, Container, List, ListItem, Typography } from "@mui/material";
 import Cards from "./Cards";
 import { cardNum } from "./Game";
-import { CodenamesBoardProps, Hint, Role, Team } from "./Model";
 import HintForm, { HintFormInputs } from "./HintForm";
+import { CodenamesBoardProps, Hint, Role, Team } from "./Model";
 import { SetupView } from "./SetupView";
 
 // リストからランダムにn個の要素を抽出する関数
@@ -33,12 +33,8 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const { ctx, G, moves, playerID, matchData } = props;
   const { words } = useWords();
 
-  let winnerTeam = Team.NO_SIDE;
-  if (ctx.gameover) {
-    winnerTeam = ctx.gameover.winnerTeam;
-  }
-
   const playerTeam = playerID === null ? Team.NO_SIDE : G.teams[playerID];
+  const playerName = matchData.find(({ id }) => id === Number(playerID))?.name;
   const currentPlayerId = ctx.currentPlayer;
   const currentPlayerName = matchData.find(
     ({ id }) => id === Number(currentPlayerId),
@@ -96,10 +92,22 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
     moves.endGuess();
   };
 
+  const handleCreateNextGameClick = async () => {
+    moves.nextGame();
+  };
+
   const setupViewEnabled = playerID === "0" && ctx.phase === "setup";
+  const nextGameEnabled = playerID === "0";
 
   return (
     <Container>
+      <Container>
+        {nextGameEnabled && (
+          <Button variant="contained" onClick={handleCreateNextGameClick}>
+            次のゲーム
+          </Button>
+        )}
+      </Container>
       {setupViewEnabled && (
         <SetupView
           onShuffleTeamAndRoleClick={handleShuffleClick}
@@ -132,9 +140,6 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           <div>Active Players:</div>
           <List>{ActivePlayersListItems}</List>
         </Typography>
-        {winnerTeam !== Team.NO_SIDE && (
-          <Typography>チーム{winnerTeam}の勝利</Typography>
-        )}
         <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
           {G.hint.keyword}, {G.hint.count}
         </div>

@@ -2,11 +2,11 @@ import type { Ctx, Game } from "boardgame.io";
 import {
   Card,
   CodenamesState,
+  Hint,
   Role,
   RoleType,
-  TeamType,
   Team,
-  Hint,
+  TeamType,
 } from "./Model";
 
 export const cardNum = 25;
@@ -14,6 +14,33 @@ export const cardNumOfTeamA = 9;
 export const cardNumOfTeamB = 8;
 export const cardNumOfTeamMine = 1;
 export const cardNumOfTeamNoSide = 7;
+
+const getEmptyCard: (id: number) => Card = (id) => ({
+  id: id,
+  word: "",
+  team: Team.NO_SIDE,
+  isOpen: false,
+});
+
+const initialGameState = (() => {
+  const roles: { [playerID: string]: RoleType } = {};
+  const teams: { [playerID: string]: TeamType } = {};
+  const cards: Card[] = Array.from({ length: cardNum }, (_, i) =>
+    getEmptyCard(i),
+  );
+  const hint: Hint = {
+    keyword: "現在のヒント",
+    count: 0,
+    team: Team.NO_SIDE,
+  };
+
+  return {
+    roles,
+    teams,
+    cards,
+    hint,
+  };
+})();
 
 const isTeamAWinning = (G: CodenamesState, ctx: Ctx) => {
   const openedCard = G.cards.filter((card) => card.isOpen);
@@ -47,13 +74,6 @@ const isTeamBWinning = (G: CodenamesState, ctx: Ctx) => {
   }
   return false;
 };
-
-const getEmptyCard: (id: number) => Card = (id) => ({
-  id: id,
-  word: "",
-  team: Team.NO_SIDE,
-  isOpen: false,
-});
 
 const assignTeamOfCards = (cards: Card[]) => {
   // [A, A, ..., A, B, B, ..., B, MINE, NO_SIDE, NO_SIDE, ..., NO_SIDE]のような配列を作る
@@ -89,40 +109,20 @@ const findMaster = (G: CodenamesState, team: TeamType) => {
   return masters.filter((element) => teams.includes(element))[0];
 };
 
+const openAllCard = (G: CodenamesState) => {
+  G.cards.forEach((card) => {
+    card.isOpen = true;
+  });
+};
+
 export const Codenames: Game<CodenamesState> = {
   name: "codenames",
-  setup: ({ events }) => {
-    events.setStage;
-    const roles: { [playerID: string]: RoleType } = {};
-    const teams: { [playerID: string]: TeamType } = {};
-    const cards: Card[] = Array.from({ length: cardNum }, (_, i) =>
-      getEmptyCard(i),
-    );
-    const hint: Hint = {
-      keyword: "現在のヒント",
-      count: 0,
-      team: Team.NO_SIDE,
-    };
-
-    return {
-      roles,
-      teams,
-      cards,
-      hint,
-    };
+  setup: () => {
+    return initialGameState;
   },
 
   minPlayers: 1,
   maxPlayers: 4,
-
-  endIf: ({ G, ctx }) => {
-    if (isTeamAWinning(G, ctx)) {
-      return { winnerTeam: Team.A };
-    }
-    if (isTeamBWinning(G, ctx)) {
-      return { winnerTeam: Team.B };
-    }
-  },
 
   moves: {
     endGuess: ({ events }) => {
@@ -144,10 +144,16 @@ export const Codenames: Game<CodenamesState> = {
         value: activePlayerValue,
       });
     },
-    openCard: ({ G }, id: number) => {
+    openCard: ({ G, ctx, events }, id: number) => {
       const card = G.cards.find((c) => c.id == id);
       if (card) {
         card.isOpen = true;
+      }
+
+      // ゲームの終了条件を満たしていたらendフェーズに移行する
+      if (isTeamAWinning(G, ctx) || isTeamBWinning(G, ctx)) {
+        openAllCard(G);
+        events.endPhase();
       }
     },
     setCards: ({ G }, words: string[]) => {
@@ -201,14 +207,25 @@ export const Codenames: Game<CodenamesState> = {
     endSetup: ({ events }) => {
       events.endPhase();
     },
+    nextGame: ({ G, events }) => {
+      G = initialGameState;
+      events.endPhase();
+    },
   },
 
   phases: {
     setup: {
       start: true,
       next: "main",
+      turn: {
+        order: {
+          first: () => 0,
+          next: () => 0,
+        },
+      },
     },
     main: {
+      next: "end",
       turn: {
         order: {
           first: ({ G }) => {
@@ -225,6 +242,15 @@ export const Codenames: Game<CodenamesState> = {
               return 0;
             }
           },
+        },
+      },
+    },
+    end: {
+      next: "setup",
+      turn: {
+        order: {
+          first: () => 0,
+          next: () => 0,
         },
       },
     },
