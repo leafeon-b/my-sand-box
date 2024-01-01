@@ -130,7 +130,6 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           <div>Current Phase: {ctx.phase}</div>
           <div>
             {
-              // {ctx.phase === "mainPhase" && (
               <div>
                 現在のターン: チーム: {G.teams[currentPlayerId]}, ID:{" "}
                 {ctx.currentPlayer}, {currentPlayerName}
