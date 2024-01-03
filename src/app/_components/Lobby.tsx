@@ -28,9 +28,9 @@ export const MyLobby: React.FC<MyLobbyProps> = () => {
       gameServer={server}
       lobbyServer={server}
       gameComponents={[
+        { game: Codenames, board: CodenamesBoard },
         { game: TicTacToe, board: TicTacToeBoard },
         { game: TicTacToe4, board: TicTacToe4Board },
-        { game: Codenames, board: CodenamesBoard },
       ]}
       renderer={(L) => {
         return (
