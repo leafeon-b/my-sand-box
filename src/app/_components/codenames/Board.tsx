@@ -11,7 +11,7 @@ import Cards from "./Cards";
 import { cardNum } from "./Game";
 import GameLogView from "./GameLogView";
 import HintForm, { HintFormInputs } from "./HintForm";
-import { CodenamesBoardProps, Hint, Role, Team } from "./Model";
+import { CodenamesBoardProps, Hint, PlayersData, Role, Team } from "./Model";
 import { SetupView } from "./SetupView";
 
 // リストからランダムにn個の要素を抽出する関数
@@ -38,20 +38,32 @@ function getRandomElements<T>(list: T[], n: number): T[] {
 }
 
 export function CodenamesBoard(props: CodenamesBoardProps) {
-  const { ctx, G, moves, playerID, matchData, events } = props;
+  const { ctx, G, moves, playerID, matchData, events, log } = props;
   const { words } = useWords();
 
-  const playerTeam = playerID === null ? Team.NO_SIDE : G.teams[playerID];
-  const playerName = matchData.find(({ id }) => id === Number(playerID))?.name;
+  const playersData: PlayersData = matchData!.map((match) => {
+    const id = match.id;
+    const name = match.name;
+    const team = G.teams[id];
+    const role = G.roles[id];
+    return { id, name, team, role };
+  });
+
+  const playerTeam =
+    playersData.find((player) => player.id.toString() === playerID)?.team ??
+    Team.NO_SIDE;
+  const playerName = playersData.find(
+    (player) => player.id.toString() === playerID,
+  )?.name;
   const currentPlayerId = ctx.currentPlayer;
-  const currentPlayerName = matchData.find(
+  const currentPlayerName = matchData?.find(
     ({ id }) => id === Number(currentPlayerId),
   )?.name;
   const activePlayers = ctx.activePlayers ?? {};
   const ActivePlayersListItems = Object.keys(activePlayers).map((playerID) => {
     return (
       <ListItem key={playerID}>
-        {matchData.find((player) => player.id.toString() === playerID)?.name}:{" "}
+        {matchData?.find((player) => player.id.toString() === playerID)?.name}:{" "}
         {activePlayers[playerID]}
       </ListItem>
     );
@@ -124,7 +136,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
       )}
       <Container>
         <h2>プレイヤーと役職・チーム</h2>
-        {matchData.map((player) => (
+        {matchData?.map((player) => (
           <div key={player.id}>
             {player.name} - {G.roles[player.id]} ({G.teams[player.id]})
           </div>
@@ -167,7 +179,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
             )}
         </Grid>
         <Grid item xs={6}>
-          <GameLogView />
+          <GameLogView logs={log} playersData={playersData} cards={G.cards} />
         </Grid>
       </Grid>
     </Container>

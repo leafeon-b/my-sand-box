@@ -29,6 +29,13 @@ export interface Hint {
   team: TeamType;
 }
 
+export type PlayersData = {
+  id: number;
+  name?: string;
+  team: TeamType;
+  role: RoleType;
+}[];
+
 export interface CodenamesState {
   roles: {
     [playerID: string]: RoleType;
@@ -40,9 +47,7 @@ export interface CodenamesState {
   hint: Hint;
 }
 
-export interface CodenamesBoardProps extends BoardProps<CodenamesState> {
-  matchData: Array<{ id: number; name: string }>;
-}
+export interface CodenamesBoardProps extends BoardProps<CodenamesState> {}
 
 export interface SetupViewProps {
   onShuffleTeamAndRoleClick: () => void;
