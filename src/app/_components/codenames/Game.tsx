@@ -119,7 +119,7 @@ export const Codenames: Game<CodenamesState> = {
   },
 
   minPlayers: 1,
-  maxPlayers: 4,
+  maxPlayers: 6,
 
   moves: {
     endGuess: ({ G, events }) => {
