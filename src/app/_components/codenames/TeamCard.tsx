@@ -1,12 +1,4 @@
-import {
-  Card,
-  CardContent,
-  List,
-  ListItem,
-  Theme,
-  Typography,
-  makeStyles,
-} from "@mui/material";
+import { Card, CardContent, List, ListItem, Typography } from "@mui/material";
 import { PlayersData, Role, Team, TeamType } from "./Model";
 
 export interface TeamCardProps {
