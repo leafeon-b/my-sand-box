@@ -18,13 +18,13 @@ export default function GameLogView(props: GameLogViewProps) {
   console.log("log: ", logs);
   return (
     <List>
-      {openCardLogs.map((logs) => {
-        const playerID = logs.action.payload.playerID;
+      {openCardLogs.map((log) => {
+        const playerID = log.action.payload.playerID;
         const player = playersData.find((p) => p.id.toString() === playerID);
-        const cardID = logs.action.payload.args[0];
+        const cardID = log.action.payload.args[0];
         const card = cards.find((c) => c.id === cardID);
         return (
-          <ListItem key={logs._stateID}>
+          <ListItem key={log._stateID}>
             {player?.name}({player?.team}) guesses {card?.word}({card?.team})
           </ListItem>
         );
