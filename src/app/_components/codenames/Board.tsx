@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import Cards from "./Cards";
 import { cardNum } from "./Game";
+import GameLogView from "./GameLogView";
 import HintForm, { HintFormInputs } from "./HintForm";
 import { CodenamesBoardProps, Hint, Role, Team } from "./Model";
 import { SetupView } from "./SetupView";
-import GameLogView from "./GameLogView";
 
 // リストからランダムにn個の要素を抽出する関数
 function getRandomElements<T>(list: T[], n: number): T[] {
@@ -105,16 +105,13 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   };
 
   const setupViewEnabled = playerID === "0" && ctx.phase === "setup";
-  const nextGameEnabled = playerID === "0";
 
   return (
     <Container>
       <Container>
-        {nextGameEnabled && (
-          <Button variant="contained" onClick={handleCreateNextGameClick}>
-            次のゲーム
-          </Button>
-        )}
+        <Button variant="contained" onClick={handleCreateNextGameClick}>
+          次のゲーム
+        </Button>
       </Container>
       {setupViewEnabled && (
         <SetupView

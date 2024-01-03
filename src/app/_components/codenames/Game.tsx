@@ -22,7 +22,7 @@ const getEmptyCard: (id: number) => Card = (id) => ({
   isOpen: false,
 });
 
-const initialGameState = (() => {
+export const initialGameState = (() => {
   const roles: { [playerID: string]: RoleType } = {};
   const teams: { [playerID: string]: TeamType } = {};
   const cards: Card[] = Array.from({ length: cardNum }, (_, i) =>
@@ -208,8 +208,11 @@ export const Codenames: Game<CodenamesState> = {
       events.endPhase();
     },
     nextGame: ({ G, events }) => {
-      G = initialGameState;
-      events.endPhase();
+      G.cards = initialGameState.cards;
+      G.hint = initialGameState.hint;
+      G.roles = initialGameState.roles;
+      G.teams = initialGameState.teams;
+      events.setPhase("setup");
     },
   },
 
