@@ -29,11 +29,7 @@ export const initialGameState = (() => {
   const cards: Card[] = Array.from({ length: cardNum }, (_, i) =>
     getEmptyCard(i),
   );
-  const hint: Hint = {
-    keyword: "現在のヒント",
-    count: 0,
-    team: Team.NO_SIDE,
-  };
+  const hint = undefined;
 
   return {
     roles,
@@ -126,7 +122,8 @@ export const Codenames: Game<CodenamesState> = {
   maxPlayers: 4,
 
   moves: {
-    endGuess: ({ events }) => {
+    endGuess: ({ G, events }) => {
+      G.hint = undefined;
       events.endTurn();
     },
     giveHint: ({ G, ctx, events }, hint: Hint) => {
