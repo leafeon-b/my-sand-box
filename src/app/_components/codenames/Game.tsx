@@ -8,6 +8,7 @@ import {
   Team,
   TeamType,
 } from "./Model";
+import { INVALID_MOVE } from "boardgame.io/core";
 
 export const cardNum = 25;
 export const cardNumOfTeamA = 9;
@@ -147,6 +148,9 @@ export const Codenames: Game<CodenamesState> = {
     openCard: ({ G, ctx, events }, id: number) => {
       const card = G.cards.find((c) => c.id == id);
       if (card) {
+        if (card.isOpen) {
+          return INVALID_MOVE;
+        }
         card.isOpen = true;
       }
 
