@@ -13,6 +13,7 @@ import GameLogView from "./GameLogView";
 import HintForm, { HintFormInputs } from "./HintForm";
 import { CodenamesBoardProps, Hint, PlayersData, Role, Team } from "./Model";
 import { SetupView } from "./SetupView";
+import { LogEntry } from "boardgame.io";
 
 // リストからランダムにn個の要素を抽出する関数
 function getRandomElements<T>(list: T[], n: number): T[] {
@@ -37,9 +38,42 @@ function getRandomElements<T>(list: T[], n: number): T[] {
   return result;
 }
 
+function getCurrentGameLog(log: LogEntry[]): LogEntry[] {
+  const condition = (l: LogEntry) =>
+    l.action.type == "MAKE_MOVE" && l.action.payload.type === "nextGame";
+  return findAndReturnRest(log, condition);
+}
+
+function findAndReturnRest<T>(
+  list: T[],
+  condition: (element: T) => boolean,
+): T[] {
+  // 条件を満たす最も末尾に近い要素のインデックスを見つけます。
+  const index = findLastIndex(list, condition);
+
+  // 見つかった要素以降のリストを返します。
+  return list.slice(index);
+}
+
+function findLastIndex<T>(
+  list: T[],
+  condition: (element: T) => boolean,
+): number {
+  // 末尾から条件を満たす要素を探します。
+  for (let i = list.length - 1; i >= 0; i--) {
+    if (condition(list[i])) {
+      return i;
+    }
+  }
+  // 条件を満たす要素がない場合は0を返します。※通常のfindとは異なるので注意
+  return 0;
+}
+
 export function CodenamesBoard(props: CodenamesBoardProps) {
   const { ctx, G, moves, playerID, matchData, events, log } = props;
   const { words } = useWords();
+
+  const currentGameLog = getCurrentGameLog(log);
 
   const playersData: PlayersData = matchData!.map((match) => {
     const id = match.id;
@@ -179,7 +213,11 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
             )}
         </Grid>
         <Grid item xs={6}>
-          <GameLogView logs={log} playersData={playersData} cards={G.cards} />
+          <GameLogView
+            logs={currentGameLog}
+            playersData={playersData}
+            cards={G.cards}
+          />
         </Grid>
       </Grid>
     </Container>
