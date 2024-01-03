@@ -1,19 +1,13 @@
 import { useWords } from "@/app/_hooks/useWords";
-import {
-  Button,
-  Container,
-  Grid,
-  List,
-  ListItem,
-  Typography,
-} from "@mui/material";
+import { Button, Container, Grid } from "@mui/material";
+import { LogEntry } from "boardgame.io";
 import Cards from "./Cards";
+import DebugView from "./DebugView";
 import { cardNum } from "./Game";
 import GameLogView from "./GameLogView";
 import HintForm, { HintFormInputs } from "./HintForm";
 import { CodenamesBoardProps, Hint, PlayersData, Role, Team } from "./Model";
 import { SetupView } from "./SetupView";
-import { LogEntry } from "boardgame.io";
 import TeamCard from "./TeamCard";
 
 // リストからランダムにn個の要素を抽出する関数
@@ -87,23 +81,8 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const playerTeam =
     playersData.find((player) => player.id.toString() === playerID)?.team ??
     Team.NO_SIDE;
-  const playerName = playersData.find(
-    (player) => player.id.toString() === playerID,
-  )?.name;
   const currentPlayerId = ctx.currentPlayer;
-  const currentPlayerName = matchData?.find(
-    ({ id }) => id === Number(currentPlayerId),
-  )?.name;
   const activePlayers = ctx.activePlayers ?? {};
-  const ActivePlayersListItems = Object.keys(activePlayers).map((playerID) => {
-    return (
-      <ListItem key={playerID}>
-        {matchData?.find((player) => player.id.toString() === playerID)?.name}:{" "}
-        {activePlayers[playerID]}
-      </ListItem>
-    );
-  });
-
   const isCardHidden = playerID === null || G.roles[playerID] !== Role.Master;
 
   const handleShuffleClick = () => {
@@ -155,6 +134,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
 
   return (
     <Container>
+      <DebugView G={G} ctx={ctx} matchData={matchData} />
       <Container>
         <Button variant="contained" onClick={handleCreateNextGameClick}>
           次のゲーム
@@ -178,21 +158,6 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
             <TeamCard team={Team.B} playersData={playersData} />
           </Grid>
         </Grid>
-      </Container>
-      <Container>
-        <Typography variant="h5" gutterBottom>
-          <div>Current Phase: {ctx.phase}</div>
-          <div>
-            {
-              <div>
-                現在のターン: チーム: {G.teams[currentPlayerId]}, ID:{" "}
-                {ctx.currentPlayer}, {currentPlayerName}
-              </div>
-            }
-          </div>
-          <div>Active Players:</div>
-          <List>{ActivePlayersListItems}</List>
-        </Typography>
       </Container>
       <Grid container spacing={2}>
         <Grid item xs={6}>
