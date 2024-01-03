@@ -14,6 +14,7 @@ import HintForm, { HintFormInputs } from "./HintForm";
 import { CodenamesBoardProps, Hint, PlayersData, Role, Team } from "./Model";
 import { SetupView } from "./SetupView";
 import { LogEntry } from "boardgame.io";
+import TeamCard from "./TeamCard";
 
 // リストからランダムにn個の要素を抽出する関数
 function getRandomElements<T>(list: T[], n: number): T[] {
@@ -169,12 +170,14 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
         />
       )}
       <Container>
-        <h2>プレイヤーと役職・チーム</h2>
-        {matchData?.map((player) => (
-          <div key={player.id}>
-            {player.name} - {G.roles[player.id]} ({G.teams[player.id]})
-          </div>
-        ))}{" "}
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <TeamCard team={Team.A} playersData={playersData} />
+          </Grid>
+          <Grid item xs={6}>
+            <TeamCard team={Team.B} playersData={playersData} />
+          </Grid>
+        </Grid>
       </Container>
       <Container>
         <Typography variant="h5" gutterBottom>
