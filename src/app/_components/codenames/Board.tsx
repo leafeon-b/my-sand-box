@@ -161,9 +161,11 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
       </Container>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
-            {G.hint?.keyword}, {G.hint?.count}
-          </div>
+          {G.hint && (
+            <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
+              {G.hint.keyword}, {G.hint.count}
+            </div>
+          )}
           <Cards
             cards={G.cards}
             hidden={isCardHidden}
