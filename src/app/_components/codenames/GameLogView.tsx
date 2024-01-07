@@ -1,4 +1,4 @@
-import { List, ListItem, Paper } from "@mui/material";
+import { List, ListItem, Paper, Typography } from "@mui/material";
 import { LogEntry } from "boardgame.io";
 import { Card, Hint, PlayersData } from "./Model";
 
@@ -40,8 +40,8 @@ export default function GameLogView(props: GameLogViewProps) {
 
   console.log("log: ", logs);
   return (
-    <Paper>
-      ゲームログ
+    <Paper sx={{ width: "100%", maxWidth: 360, height: 540, overflow: "auto" }}>
+      <Typography sx={{ textAlign: "center" }}>ゲームログ</Typography>
       <List>
         {openCardLogs.map((log) => {
           return <ListItem key={log._stateID}>{stringify(log)}</ListItem>;

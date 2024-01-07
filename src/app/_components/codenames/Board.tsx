@@ -1,5 +1,5 @@
 import { useWords } from "@/app/_hooks/useWords";
-import { Button, Container, Grid } from "@mui/material";
+import { Box, Button, Container, Grid } from "@mui/material";
 import { LogEntry } from "boardgame.io";
 import Cards from "./Cards";
 import DebugView from "./DebugView";
@@ -135,7 +135,7 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const setupViewEnabled = playerID === "0" && ctx.phase === "setup";
 
   return (
-    <Container>
+    <Box display={"flex"} flexDirection={"column"} gap={2}>
       <DebugView G={G} ctx={ctx} matchData={matchData} />
       <Container>
         <Button variant="contained" onClick={handleCreateNextGameClick}>
@@ -194,6 +194,6 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
           />
         </Grid>
       </Grid>
-    </Container>
+    </Box>
   );
 }
