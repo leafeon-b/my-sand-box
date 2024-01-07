@@ -84,6 +84,8 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
   const currentPlayerId = ctx.currentPlayer;
   const activePlayers = ctx.activePlayers ?? {};
   const isCardHidden = playerID === null || G.roles[playerID] !== Role.Master;
+  const hintColor =
+    G.teams[currentPlayerId] == Team.A ? "text-red-500" : "text-blue-500";
 
   const handleShuffleClick = () => {
     moves.shuffleRolesAndTeams();
@@ -162,7 +164,9 @@ export function CodenamesBoard(props: CodenamesBoardProps) {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           {G.hint && (
-            <div className="inline-block text-lg italic shadow text-red-500 font-sans outline border-transparent border-2">
+            <div
+              className={`inline-block text-lg italic shadow ${hintColor} font-sans outline border-transparent border-2`}
+            >
               {G.hint.keyword}, {G.hint.count}
             </div>
           )}
