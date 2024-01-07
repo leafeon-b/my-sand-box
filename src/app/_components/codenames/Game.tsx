@@ -82,7 +82,7 @@ const assignTeamOfCards = (cards: Card[]) => {
       cardNumOfTeamA + cardNumOfTeamB,
       cardNumOfTeamA + cardNumOfTeamB + cardNumOfTeamMine,
     )
-    .fill(Team.NO_SIDE, -cardNumOfTeamNoSide, -0);
+    .fill(Team.NO_SIDE, -cardNumOfTeamNoSide);
 
   // シャッフル
   for (let i = teams.length - 1; i > 0; i--) {
