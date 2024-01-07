@@ -29,12 +29,14 @@ export interface Hint {
   team: TeamType;
 }
 
-export type PlayersData = {
+export type PlayerData = {
   id: number;
   name?: string;
   team: TeamType;
   role: RoleType;
-}[];
+};
+
+export type PlayersData = PlayerData[];
 
 export interface CodenamesState {
   roles: {
